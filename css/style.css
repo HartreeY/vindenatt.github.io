@@ -42,6 +42,15 @@ nav{
     justify-content:center;
 }
 
+@font-face {
+  font-family: remachine;
+  src: url(../remachine.ttf);
+}
+
+.aside-feature {
+  text-align: center;
+}
+
 #main-board{
     display: flex;
     flex-wrap: wrap;

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="stylesheet" href="css/style.css">
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <title>Elemental: Rebirth</title>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-item">Hub</div>
+    <div class="nav-item"><button onclick="javascript:getImg()">Download</button></div>
+    <div class="nav-item">About</div>
+  </nav>
+
+  <div class="main-grid">
+    <main>
+      <div id="main-board">
+
+      </div>
+    </main>
+    <aside>
+
+    </aside>
+  </div>
+  
+</body>
+<script type="text/javascript">
+
+  var jdata_el=[];
+  var jdata_eq=[];
+  var pics= [];
+
+
+  $(document).ready(function(){
+    $.getJSON("elements.json", function(data){
+          $.each( data, function( key, val ) {
+        jdata_el[key]=val;
+       });
+        }).fail(function(){
+            console.log("An error has occurred when loading JSON.");
+        });
+    $.getJSON("equations.json", function(data){
+      $.each( data, function( key, val ) {
+        jdata_eq[key]=val;
+       });
+    }).fail(function(){
+        console.log("An error has occurred when loading JSON.");
+    });
+  });
+
+  function getSourceAsDOM(url)
+  {
+      xmlhttp=new XMLHttpRequest();
+      xmlhttp.open("GET",url,false);
+      xmlhttp.send();
+      parser=new DOMParser();
+      return parser.parseFromString(xmlhttp.responseText,"text/html");      
+  }
+
+  function getImg(){
+    for(let i = 0; i <20; i++) {
+      let ur = "https://www.google.com/search?q=" + encodeURIComponent(jdata_el[i][1]) + '&tbm=isch';
+      const parser = new DOMParser();
+      let html = getSourceAsDOM(ur);
+
+
+      for (let j=0;j<6;j++){
+        pics[i][j]=html.images[0].src;
+      }
+    }
+    console.log(pics);
+  }
+
+
+
+  function clEl(_this){
+
+  }
+  function save(){
+
+  }
+  
+</script>
