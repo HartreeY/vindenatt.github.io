@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="text/javascript" src="elements.js"></script>
+  <script type="text/javascript" src="equations.js"></script>
+  <script type="text/javascript" src="pics.js"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <title>Elemental: Rebirth</title>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-item">Hub</div>
+    <button class="bitton" onclick="javascript:saveAndDownload()">Save and Download</button>
+    <div class="nav-item">About</div>
+  </nav>
+
+  <div class="main-grid">
+    <main>
+      <div id="main-board">
+
+      </div>
+    </main>
+    <aside>
+      <br><br><br><br><br><br><br><br><br><br>
+      <div id="custom-link-wrap" style="display:none">
+        <textarea id="custom-link" style="width:100%"></textarea><br>
+        <button onclick="javascript:submitCustomImg()">Submit custom</button>
+      </div>
+    </aside>
+  </div>
+  
+</body>
+<script type="text/javascript">
+  var cur_el = null;
+  
+  $(document).ready(function(){populate();});
+  
+  function submitCustomImg(){
+    console.log($("#custom-link").val());
+    jdata_el[cur_el.dataset.element][3]=$("#custom-link").val();
+    cur_el.style.backgroundImage="url('"+$("#custom-link").val()+"')";
+  }
+  function clEl(_this){
+    cur_el=_this;
+    $("#custom-link-wrap").show();
+    
+    if (_this.dataset.picn==8)
+      _this.dataset.picn=0;
+    else
+      _this.dataset.picn++;
+    
+    var g = (Number(_this.dataset.picn)+1);
+    _this.style.backgroundImage="url('"+jdata_pics[_this.dataset.element]["pic"+g]+"')";
+    jdata_el[_this.dataset.element][3]=jdata_pics[_this.dataset.element]["pic"+g];
+  }
+  function save(){
+    console.log(jdata_eq);
+  }
+  function populate(){
+    for(i = 0; i <100; i++) {
+      o = document.createElement("div");
+      o.classList.add("elem");
+      o.style.backgroundImage="url('"+jdata_el[i][3]+"')";
+      o.classList.add("p"+jdata_el[i][0]);
+      o.dataset.element = i;
+      o.setAttribute("onclick","clEl(this)");
+      o.dataset.picn = 0;
+      o.innerHTML="<span>";
+      o.innerHTML+='</span><span class="elem-name">'+jdata_el[i][1]+'</span>';
+      $("#main-board").append(o);
+    }
+  }
+  function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+  }
+  function saveAndDownload(){
+    
+    download(JSON.stringify(jdata_el), 'new_elements.json', 'text/plain');
+  }
+</script>
