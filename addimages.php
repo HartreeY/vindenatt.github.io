@@ -23,7 +23,7 @@
   } 
   //--------------------------------------------
   //----------------get elements----------------
-  $sql1 = "SELECT id,color,name,content,image FROM elements WHERE id between 451 and 500";
+  $sql1 = "SELECT id,color,name,content,image FROM elements WHERE id between 1401 and 1500";
   $result1 = mysqli_query($conn, $sql1);
 
   $data_el = array();

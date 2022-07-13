@@ -47,8 +47,28 @@ nav{
   src: url(../remachine.ttf);
 }
 
+aside {
+  text-align: center;
+}
+
+aside div {
+  margin-bottom: 7%;
+}
+
+aside textarea, input[type=text] {
+  width: 100%;
+}
+
+.chock {
+  transform: scale(1.5);
+  margin: 0 16px;
+}
+
 .aside-feature {
   text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #main-board{
@@ -170,7 +190,15 @@ nav{
   top: 0.1rem;
   right: 0.1rem;
   z-index: 3;
-  top: 0rem;
+}
+
+.elem-updated {
+  color:white;
+  font-size:13px;
+  position: absolute;
+  top: 1.2rem;
+  right: 0.3rem;
+  z-index: 3;
 }
 
 .feature-label{
@@ -181,7 +209,27 @@ nav{
     font-size:16px;
 }
 
+.input-number {
+  width: 3.5rem;
+  font-size: 20px;
+  background: #102327;
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 6px;
+  padding: 6px;
+}
 
+aside button {
+  font-size: 15px;
+  margin: 0 10px;
+  background: #24474e;
+  color: white;
+  text-align: center;
+  /* border: 1px solid rgb(137, 192, 192); */
+  border-radius: 6px;
+  padding: 6px;
+}
 
 .p0 {
     background-color: rgb(84, 117, 227);
@@ -538,3 +586,4 @@ nav{
       transform: translateX(0);
     }
   }
+  
