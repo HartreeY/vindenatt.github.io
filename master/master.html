@@ -1,0 +1,176 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="text/javascript" src="../elements.json2"></script>
+  <script type="text/javascript" src="../equations.json2"></script>
+  <script type="text/javascript" src="../pics.json2"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript">const gm_num = "00";const gm_from = 0;const gm_until = 200;const old_pics_mode = false;</script>
+  
+  <title>Elemental: Rebirth</title>
+</head>
+<body>
+
+  <nav>
+    <h1 style="font-family: remachine" id="gm-h1">Game Master's Chamber </h1>
+  </nav>
+
+  <div class="main-grid">
+    <main>
+      <div id="main-board">
+
+      </div>
+    </main>
+    <aside>
+      <br><br><br><br><br><br><br><br><br><br>
+      <div id="custom-link-wrap" style="display:none">
+        <textarea id="custom-link" style="width:100%"></textarea><br>
+        <button onclick="submitCustomImg()">Submit custom image</button>
+      </div>
+      <div id="traducja-wrap" style="display:none">
+        <input type="text" id="traducja" style="width:100%"></input><br>
+        <button onclick="submitTraducJA()">Submit Japanese</button>
+      </div>
+      <div id="traducen-wrap" style="display:none">
+        <input type="text" id="traducen" style="width:100%"></input><br>
+        <button onclick="submitTraducRU()">Submit Russian</button>
+      </div>
+      <br>
+      <div class="aside-feature">
+        <button class="bitton" onclick="saveAndDownload()">Save and Download</button>
+      </div>
+      <br>
+      <hr>
+      <div class="aside-feature">
+        <label class="feature-label"><input type="range" id="element-scale" name="element-scale" min="0.5" max="2" value="1" step="0.5">
+        Element scale</label>
+        </div>
+    </aside>
+  </div>
+  
+</body>
+<script type="text/javascript">
+  var cur_el = null;
+
+  var good_pics = jdata_pics.reduce(function(result, item) {
+    result[item["id"]] = item;
+    return result;
+    }, {});
+
+  $(document).ready(function(){
+    $("#gm-h1").append(gm_num);
+    populate();
+  
+    $(".elem").click(function(e) {
+      if($(e.target).is(".elem-delete")) {
+        let _this = e.target.parentElement;
+        let el = _this.dataset.element;
+        console.log("Deleted "+el+" ("+jdata_el[el][1]+")");
+        delete jdata_el[el];
+        _this.classList.add("deleted");
+
+      }
+      else {
+        cur_el= e.target;
+        $("#custom-link-wrap").show();
+        $("#traducja-wrap").show();
+        $("#traducru-wrap").show();
+        
+        if (cur_el.dataset.picn==8)
+          cur_el.dataset.picn=0;
+        else
+          cur_el.dataset.picn++;
+        
+        var g = (Number(cur_el.dataset.picn)+1);
+        cur_el.style.backgroundImage="url('"+good_pics[cur_el.dataset.element]["pic"+g]+"')";
+        jdata_el[cur_el.dataset.element][3]=good_pics[cur_el.dataset.element]["pic"+g];
+      }
+    });
+  });
+  
+  function submitCustomImg(){
+    jdata_el[cur_el.dataset.element][3]=$("#custom-link").val();
+    cur_el.style.backgroundImage="url('"+$("#custom-link").val()+"')";
+  }
+  function submitTraducJA(){
+    jdata_el[cur_el.dataset.element][4]=$("#traducja").val();
+  }
+  function submitTraducRU(){
+    jdata_el[cur_el.dataset.element][5]=$("#traducru").val();
+  }
+
+  function populate(){
+    for(let i = gm_from; i <gm_until; i++) {
+      if (jdata_el[i]){
+/*         if (!good_pics[i]){
+          console.log(good_pics[i-1]);
+          console.log(good_pics[i-2]);
+        } */
+        
+        let o = document.createElement("div");
+        o.classList.add("elem");
+        // if (old_pics_mode) {
+        //   o.style.backgroundImage="url('"+good_pics[i]["pic1"]+"')";
+        // }
+        if (jdata_el[i][3]==null || jdata_el[i][3]=="") {
+          o.style.backgroundImage="url('"+good_pics[i]["pic1"]+"')";
+          jdata_el[i][3]=good_pics[i]["pic1"];
+        }
+        else {
+          o.style.backgroundImage="url('"+jdata_el[i][3]+"')";
+        }
+          
+        o.classList.add("p"+jdata_el[i][0]);
+        o.dataset.element = i;
+        o.dataset.picn = 0;
+        o.innerHTML="<span>";
+        o.innerHTML+='</span><span class="elem-name">'+jdata_el[i][1]+'</span><span class="elem-delete">ｘ</span>';
+        $("#main-board").append(o);
+
+        
+      }
+    }
+  }
+  function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+  }
+  function saveAndDownload(){
+    let res_el = "var jdata_el = ";
+    res_el += JSON.stringify(jdata_el);
+    res_el += ";";
+    download(res_el, 'elements-'+gm_num+'.json2', 'text/plain');
+  }
+  
+  function appendOldAndTraduc(){
+    var good_old_data = new Object();
+    for (let i=0;i<old_data.length;i++){
+      good_old_data[old_data[i]["id"]] = old_data[i];
+    }
+    
+    Object.keys(jdata_el).forEach(el => {
+      jdata_el[el][2]=good_old_data[el]["mark"];
+      jdata_el[el][4]="";
+      jdata_el[el][5]="";
+      jdata_el[el][6]=Number(good_old_data[el]["originalEquation"]);
+      jdata_el[el][7]=Number(good_old_data[el]["owners"]);
+      jdata_el[el][8]=Number(good_old_data[el]["prevalence"]);
+      jdata_el[el][9]=Number(good_old_data[el]["usefulness"]);
+      jdata_el[el][10]=2;
+    });
+    saveAndDownload();
+  }
+
+  $('#element-scale').change( function () {
+    document.documentElement.style.setProperty('--element-scale', $('#element-scale').val());
+  });
+
+</script>

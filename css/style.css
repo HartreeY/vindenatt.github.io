@@ -105,6 +105,10 @@ nav{
     z-index: 100;
   }
 
+  .deleted {
+    animation: element-drop 0.6s cubic-bezier(.2,.01,1,.44) both, fade-out linear 0.5s both;
+  }
+
   .combine {
     position: absolute;
     top: 0;
@@ -146,7 +150,6 @@ nav{
     transition: 0.3s;
     background-color:black;
     color:white;
-    position: relative;
     font-size:13px;
     position: absolute;
     pointer-events: none;
@@ -154,6 +157,20 @@ nav{
     z-index: 3;
     line-height: 1.1;
     bottom: -0.5rem;
+}
+
+.elem-delete {
+  padding: 0px 2px;
+  border-radius:16px;
+  transition: 0.3s;
+  background-color:rgb(204, 1, 1);
+  color:white;
+  font-size:13px;
+  position: absolute;
+  top: 0.1rem;
+  right: 0.1rem;
+  z-index: 3;
+  top: 0rem;
 }
 
 .feature-label{
