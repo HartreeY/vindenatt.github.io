@@ -1,6 +1,6 @@
 :root {
     --element-scale:1;
-    --background-hover:#0000001f;
+    --font-size:11px;
 }
 
 header,
@@ -139,7 +139,7 @@ aside input[type=text] {
   .combine .elem {
     animation: element-combine-x 0.28s cubic-bezier(.5,.5,.5,1) both;
   }
-  .elem-held-wrapper, .elem-found-wrapper, .elem-error-wrapper {
+  .elem-held-wrapper, .elem-found-wrapper, .elem-error-wrapper,.elem-dropped-wrapper {
     position: absolute;
     top: 0;
     left: 0;
@@ -174,6 +174,9 @@ aside input[type=text] {
   .elem-error-wrapper .elem {
     animation: error-shake 0.6s both;
   }
+  .notyet {
+    animation: error-shake 0.6s both;
+  }
   .elem-held-wrapper {
     animation: element-grab-x 0.28s both;
   }
@@ -201,13 +204,14 @@ aside input[type=text] {
     border-radius:16px;
     background-color:black;
     color:white;
-    font-size:12px;
+    font-size:var(--font-size);
     position: absolute;
     pointer-events: none;
     align-self: center;
     z-index: 3;
     line-height: 1.1;
     bottom: -0.5rem;
+    font-family: sans-serif;
     overflow-wrap: break-word;
     max-width: calc(1.2 * 60px * var(--element-scale));
     width: max-content;
@@ -373,7 +377,7 @@ aside button {
       transform: translateY(6px) scale(0.85);
     }
     100% {
-      opacity: 1;
+      opacity: 0.8;
       transform: translateY(0px) scale(1);
     }
   }

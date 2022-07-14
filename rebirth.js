@@ -94,6 +94,10 @@ function changeName() {
 
 function dropElement() {
   let $sus = $(".elem-held-wrapper");
+  $sus.addClass("elem-dropped-wrapper");
+  $sus.removeClass("elem-held-wrapper");
+  window.removeEventListener("mousemove", wrapMouseFollow);
+  /* console.log(" huh"); */
   if ($sus.length) {
     //drop if holding
     snd_drop.pause();
@@ -102,7 +106,7 @@ function dropElement() {
     $sus.addClass("drop");
     $sus.on("animationend", function () {
       $sus.remove();
-      console.log("animend");
+      /* console.log("animend"); */
     });
   }
 }
@@ -113,114 +117,134 @@ $(document).click(function (event) {
   }
   else {
     let gg = event.target;
-    gg.classList.toggle("restock");
     let $sus = $(".elem-held-wrapper .elem");
+    
+    if (pickable){
+      gg.classList.remove("restock");
+      setTimeout(function(){      gg.classList.add("restock");    },2);
+    }
+    else{
+      gg.classList.remove("restock");
+      gg.classList.add("notyet");
+      gg.addEventListener("animationend",function() {gg.classList.remove("notyet");});
+      snd_invalid.pause();
+      snd_invalid.currentTime = 0;
+      snd_invalid.play();
+    }
 
-    if ($(".elem-held-wrapper").length && droppable) {
-      //place back
-      var found = false;
-      var BreakException = {};
+    if ($(".elem-held-wrapper").length) {
+      if (!droppable){
 
-      try {
-        Object.values(jdata_eq).forEach(value => {
-          if ((value[0] == (gg.dataset.element) && value[1] == ($sus.data("element"))) ||
-            (value[1] == (gg.dataset.element) && value[0] == ($sus.data("element")))) {
-            found = true;
-            snd_combine.pause();
-            snd_combine.currentTime = 0;
-            snd_combine.play();
-            droppable = false;
-
-
-            const d = $(".elem-held-wrapper").offset().left - gg.offsetLeft;
-            const p = $(".elem-held-wrapper").offset().top - gg.offsetTop;
-            //console.log(event.clientX+"  "+gg.getBoundingClientRect().x);
-            //console.log(event.clientY+"  "+gg.getBoundingClientRect().y);
-            window.removeEventListener("mousemove", mouseMove);
-
-
-
-            $(".elem-held-wrapper").toggleClass("combine elem-held-wrapper");
-            $(".combine").attr("style", "--offset-x:" + (-d - 9) + "px;--offset-y:" + (-p - 16) +
-              "px;left:" + $(".combine").offset().left +
-              "px;top:" + $(".combine").offset().top + "px");
-
-            setTimeout(function () {
-
-              snd_valid.pause();
-              snd_valid.currentTime = 0;
-              snd_valid.play();
-              $(".combine").remove();
-              var $tt = $('.elem[data-element="' + value[2] + '"]');
-              var o = null;
-              var exi = false;
-
-              if ($tt.length) {
-                story[value[2]]["count"]++;
-                o = $tt[0];
-                if (  story[value[2]]["count"] != -1)
-                  o.innerHTML = '<span class="elem-count">'+story[value[2]]["count"]+'</span>';
-                else
-                  o.innerHTML = '<span class="elem-count"></span>';
-                o.innerHTML += '</span><span class="elem-name">' + jdata_el[value[2]][1] + '</span>';
-                o.classList.toggle("restock");
-                exi = true;
-              } else {
-
-                o = document.createElement("div");
-                o.classList.add("elem");
-
-                o.style.backgroundImage = "url('" + jdata_el[value[2]][3] + "')";
-                o.classList.add("p" + jdata_el[value[2]][0]);
-                o.dataset.element = value[2];
-                if (  story[value[2]]["count"] != -1)
-                  o.innerHTML = '<span class="elem-count">'+story[value[2]]["count"]+'</span>';
-                else
-                  o.innerHTML = '<span class="elem-count"></span>';
-                o.innerHTML += '</span><span class="elem-name">' + jdata_el[value[2]][1] + '</span>';
-
-                o.style.visibility = "hidden";
-                //o.lastChild.style.visibility = "hidden";
-
-                $board.append(o);
-              }
-
-              o.scrollIntoView({ behavior: "smooth", block: "center" });
-
-              const n = o.cloneNode(true);
-              n.style.visibility = "inherit";
-              $(n).children(".elem-count").html('');
-              n.classList.add("held");
-              const g = document.createElement("div");
-              g.setAttribute("style", "left:" + event.pageX + "px;top:" + (event.pageY + 4) + "px");
-              g.classList.toggle("elem-held-wrapper");
-              g.classList.toggle("combine");
-              g.appendChild(n);
-
-              $board.append(g);
-
-              const d = o.offsetLeft - gg.offsetLeft;
-              const p = o.offsetTop - gg.offsetTop;
-              h = (.95 * (d ** 2 + (4 * p) ** 2)) ** .4;
-              f = Math.max(260, Math.min(250 + h, 1e3));
-              //console.log(d+"  "+p);
-              $(".combine").attr("style", "--calculated-animation-time:" + f + "ms;" + "--offset-x:" + (-d) + "px;--offset-y:" + (-p) +
-                "px;--offset-x-zero:" + (0 === d ? "1" : "0") + ";left:" + (o.offsetLeft - 8) + "px;top:" + (o.offsetTop - 17) + "px");
-              $(".combine").toggleClass("combine elem-found-wrapper");
-              setTimeout(function () {
-                $(".elem-found-wrapper").remove(); o.style.visibility = "visible"; droppable = true; if (exi) { o.classList.toggle("opaque-restock"); }
-              }, f * 2);
-
-            }, 1000);
-            throw BreakException;
-          }
-        });
-      } catch (ff) {
-        if (ff !== BreakException) throw ff;
       }
-      if (!found) {
-        dropElement();
+      else {
+        var found = false;
+        var BreakException = {};
 
+        try {
+          Object.values(jdata_eq).forEach(value => {
+            if ((value[0] == (gg.dataset.element) && value[1] == ($sus.data("element"))) ||
+              (value[1] == (gg.dataset.element) && value[0] == ($sus.data("element")))) {
+              found = true;
+              snd_combine.pause();
+              snd_combine.currentTime = 0;
+              snd_combine.play();
+              droppable = false;
+
+
+              const d = $(".elem-held-wrapper").offset().left - gg.offsetLeft;
+              const p = $(".elem-held-wrapper").offset().top - gg.offsetTop;
+              //console.log(event.clientX+"  "+gg.getBoundingClientRect().x);
+              //console.log(event.clientY+"  "+gg.getBoundingClientRect().y);
+              window.removeEventListener("mousemove", wrapMouseFollow);
+
+
+
+              $(".elem-held-wrapper").toggleClass("combine elem-held-wrapper");
+              $(".combine").attr("style", "--offset-x:" + (-d - 9) + "px;--offset-y:" + (-p - 16) +
+                "px;left:" + $(".combine").offset().left +
+                "px;top:" + $(".combine").offset().top + "px");
+
+              setTimeout(function () {
+
+                snd_valid.pause();
+                snd_valid.currentTime = 0;
+                snd_valid.play();
+                $(".combine").remove();
+                var $tt = $('.elem[data-element="' + value[2] + '"]');
+                var o = null;
+                var exi = false;
+
+                if ($tt.length) {
+                  story[value[2]]["count"]++;
+                  o = $tt[0];
+                  if (  story[value[2]]["count"] != -1)
+                    o.innerHTML = '<span class="elem-count">'+story[value[2]]["count"]+'</span>';
+                  else
+                    o.innerHTML = '<span class="elem-count"></span>';
+                  o.innerHTML += '</span><span class="elem-name">' + jdata_el[value[2]][1] + '</span>';
+                  o.classList.remove("restock");
+                  setTimeout(function(){      o.classList.add("restock");    },2);
+                  exi = true;
+                } else {
+
+                  o = document.createElement("div");
+                  o.classList.add("elem");
+
+                  o.style.backgroundImage = "url('" + jdata_el[value[2]][3] + "')";
+                  o.classList.add("p" + jdata_el[value[2]][0]);
+                  o.dataset.element = value[2];
+                  if (  story[value[2]]["count"] != -1)
+                    o.innerHTML = '<span class="elem-count">'+story[value[2]]["count"]+'</span>';
+                  else
+                    o.innerHTML = '<span class="elem-count"></span>';
+                  o.innerHTML += '</span><span class="elem-name">' + jdata_el[value[2]][1] + '</span>';
+
+                  o.style.visibility = "hidden";
+                  //o.lastChild.style.visibility = "hidden";
+
+                  $board.append(o);
+                }
+
+                o.scrollIntoView({ behavior: "smooth", block: "center" });
+
+                const n = o.cloneNode(true);
+                n.style.visibility = "unset";
+                
+                $(n).children(".elem-count").html('');
+                n.classList.add("held");
+                const g = document.createElement("div");
+                g.setAttribute("style", "left:" + event.pageX + "px;top:" + (event.pageY + 4) + "px");
+                g.classList.toggle("elem-held-wrapper");
+                g.classList.toggle("combine");
+                g.appendChild(n);
+
+                $board.append(g);
+
+                const d = o.offsetLeft - gg.offsetLeft;
+                const p = o.offsetTop - gg.offsetTop;
+                h = (.95 * (d ** 2 + (4 * p) ** 2)) ** .4;
+                f = Math.max(260, Math.min(250 + h, 1e3));
+                //console.log(d+"  "+p);
+                $(".combine").attr("style", "--calculated-animation-time:" + f + "ms;" + "--offset-x:" + (-d) + "px;--offset-y:" + (-p) +
+                  "px;--offset-x-zero:" + (0 === d ? "1" : "0") + ";left:" + (o.offsetLeft - 8) + "px;top:" + (o.offsetTop - 17) + "px");
+                $(".combine").toggleClass("combine elem-found-wrapper");
+                setTimeout(function () {
+                  $(".elem-found-wrapper").remove(); o.style.visibility = "visible"; droppable = true; 
+                  if (exi) {     o.classList.remove("restock");
+                  setTimeout(function(){      o.classList.add("restock");    },2); }
+                }, f * 2);
+
+              }, 1000);
+              throw BreakException;
+            }
+          });
+        } catch (ff) {
+          if (ff !== BreakException) throw ff;
+        }
+        if (!found) {
+          dropElement();
+
+        }
       }
     }
     else if (pickable) {
@@ -232,7 +256,7 @@ $(document).click(function (event) {
       $(n).children(".elem-count").html('');
       n.classList.add("held");
       pickable = false;
-      setTimeout(function () { pickable = true; }, 1500);
+      setTimeout(function () { pickable = true; }, 600);
       //n.addEventListener("animationend",function() {pickable=true;});
       const d = gg.offsetLeft - event.pageX;
       const p = gg.offsetTop - event.pageY;
@@ -242,18 +266,19 @@ $(document).click(function (event) {
       wrapper.classList.add("elem-held-wrapper");
       wrapper.appendChild(n);
       $board.append(wrapper);
-      window.addEventListener('mousemove', mouseMove);
+      window.addEventListener('mousemove', wrapMouseFollow);
     }
   }
 
 });
-function mouseMove(event) {
+function wrapMouseFollow(event) {
   wrapper.style.left = event.pageX + "px";
   wrapper.style.top = event.pageY + "px";
 }
 
 $('#element-scale').change(function () {
   document.documentElement.style.setProperty('--element-scale', $('#element-scale').val());
+  document.documentElement.style.setProperty('--font-size', $('#element-scale').val()*11+"px");
 });
 
 function download(content, fileName, contentType) {
