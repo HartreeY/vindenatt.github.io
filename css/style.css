@@ -11,7 +11,7 @@ main{
     background-color: #19373c;
     box-sizing: border-box;
     padding:30px;
-    font-family: 'Arial Narrow Bold';
+    font-family: system-ui;
     font-size:20px;
     font-weight: 200;
     color:white;
@@ -21,7 +21,7 @@ main{
 .main-grid{
     display:grid;
     grid-template-columns: 3fr 1fr;
-    height: 100vh;
+    height: 90vh;
 }
 a{
     text-decoration: none;
@@ -36,7 +36,6 @@ a{
 }
 nav{
     display:flex;
-    
     max-width: 1000px;
     margin: 0 auto;
     justify-content:center;
@@ -44,7 +43,7 @@ nav{
 
 @font-face {
   font-family: remachine;
-  src: url(../remachine.ttf);
+  src: url(remachine.ttf);
 }
 
 aside {
@@ -57,6 +56,14 @@ aside div {
 
 aside textarea, input[type=text] {
   width: 100%;
+}
+
+aside input[type=text] {
+  margin-bottom: 8px;
+}
+
+.edit-field {
+  display:none;
 }
 
 .chock {
@@ -75,7 +82,7 @@ aside textarea, input[type=text] {
     display: flex;
     flex-wrap: wrap;
 }
-.elem {
+.elem, .preview-elem {
   display: inline-flex;
   flex-direction: column;
   text-align: center;
@@ -84,6 +91,7 @@ aside textarea, input[type=text] {
   text-shadow: 2px 2px 2px black;
   position: relative;
   opacity: 80%;
+  transition: opacity 0.1s;
   user-select: none;
   width: calc(60px * var(--element-scale));
   height: calc(60px * var(--element-scale));
@@ -97,6 +105,17 @@ aside textarea, input[type=text] {
   opacity: 100%;
 }
 
+.elem-count {
+  font-weight: 700;
+  font-size: 16px;
+  text-shadow: 1px 1px 2px black;
+  text-align: right;
+}
+
+.elem-delete:hover {
+  opacity: 100%;
+}
+
 .elem.held {
     border: 1.5px solid rgba(0, 0, 0, 0.25);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -104,6 +123,9 @@ aside textarea, input[type=text] {
 }
 .elem.restock {
     animation: element-restock 0.65s cubic-bezier(.29,.25,.09,1) 0.25s both;
+  }
+  .elem.opaque-restock {
+    animation: opaque-restock 0.65s cubic-bezier(.29,.25,.09,1) 0.25s both;
   }
   .elem.error {
     background-image: url(/no-element.svg);
@@ -123,6 +145,16 @@ aside textarea, input[type=text] {
     left: 0;
     pointer-events: none;
     z-index: 100;
+  }
+
+  #equation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .preview-elem {
+    transform: scale(0.8);
   }
 
   .deleted {
@@ -167,22 +199,25 @@ aside textarea, input[type=text] {
 .elem-name {
     padding: 3px 6px;
     border-radius:16px;
-    transition: 0.3s;
     background-color:black;
     color:white;
-    font-size:13px;
+    font-size:12px;
     position: absolute;
     pointer-events: none;
     align-self: center;
     z-index: 3;
     line-height: 1.1;
     bottom: -0.5rem;
+    overflow-wrap: break-word;
+    max-width: calc(1.2 * 60px * var(--element-scale));
+    width: max-content;
 }
 
 .elem-delete {
   padding: 0px 2px;
   border-radius:16px;
-  transition: 0.3s;
+  opacity: 80%;
+  transition: opacity 0.1s;
   background-color:rgb(204, 1, 1);
   color:white;
   font-size:13px;
@@ -223,6 +258,7 @@ aside textarea, input[type=text] {
 aside button {
   font-size: 15px;
   margin: 0 10px;
+  margin-bottom: 8px;
   background: #24474e;
   color: white;
   text-align: center;
@@ -303,7 +339,7 @@ aside button {
     font-family: "Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
     font-size: 16px;
     font-weight: 500;
-    height: 4rem;
+    height: 3rem;
     padding: 0 1.6rem;
     text-align: center;
     text-shadow: rgb(0 0 0 / 25%) 0 3px 8px;
@@ -314,13 +350,23 @@ aside button {
 }
 .bitton:hover {
     box-shadow: rgb(80 63 205 / 50%) 0 1px 30px;
+    
     transition-duration: .1s;
+}
+
+.credit {
+  font-size: 16px;
+  color:rgb(198 210 213);
+  text-align: right;
+  position: absolute;
+  font-family: system-ui;
+  right: 20px;
 }
 
 @keyframes top-bar-slide-in {
     from{transform:translateY(-30px)}
     to{transform:translateY(0)}
-  }
+}
   @keyframes element-restock {
     0% {
       opacity: 0.7;
@@ -328,6 +374,14 @@ aside button {
     }
     100% {
       opacity: 1;
+      transform: translateY(0px) scale(1);
+    }
+  }
+  @keyframes opaque-restock {
+    0% {
+      transform: translateY(6px) scale(0.85);
+    }
+    100% {
       transform: translateY(0px) scale(1);
     }
   }
@@ -396,6 +450,7 @@ aside button {
     }
     100% {
       transform: translateY(var(--offset-y))translateX(var(--offset-x))scale(1);
+      opacity: 80%;
     }
   }
   @keyframes element-found-reveal {

@@ -34,14 +34,19 @@
           <button onclick="showRange()">Go</button>
         </div>
         <div>❖ ー previously updated</div>
-        <div  id="custom-link-wrap" style="display:none">
+        <div class="edit-field">
+          <input type="text" id="custom-name" placeholder=""></input>
+          <input type="text" id="traducja" placeholder="Japanese"></input>
+          <input type="text" id="traducru" placeholder="Russian"></input>
+          <button onclick="submitNames()">Change name/translation</button>
+        </div>
+        <div class="edit-field">
           <textarea id="custom-link"></textarea>
           <button onclick="submitCustomImg()">Submit custom image</button>
         </div>
-        <div  id="traduc-wrap" style="display:none">
-          <input type="text" id="traducja" placeholder="Japanese"></input>
-          <input type="text" id="traducru" placeholder="Russian" style=" margin-bottom: 8px;"></input>
-          <button onclick="submitTraduc()">Submit translation</button>
+        <div class="edit-field">
+          Main equation:
+          <div id="equation"></div>
         </div>
         <div>
           Old pics vision<input class="chock" type="checkbox" id="old-pics-check" />
@@ -82,47 +87,33 @@ function showRange(){
   $board.empty();
   gm_from = $("#custom-gm-from").val();
   gm_until = $("#custom-gm-until").val();
+
   populate();
 }
-  
-  function submitCustomImg(){
-    jdata_el[cur_el.dataset.element][3]=$("#custom-link").val();
-    cur_el.style.backgroundImage="url('"+$("#custom-link").val()+"')";
-  }
-  function submitTraduc(){
+
+  function submitNames(){
+    jdata_el[cur_el.dataset.element][1]=$("#custom-name").val();
+    $(cur_el).children(".elem-name").html($("#custom-name").val());
     jdata_el[cur_el.dataset.element][4]=$("#traducja").val();
     jdata_el[cur_el.dataset.element][5]=$("#traducru").val();
   }
 
+  function submitCustomImg(){
+    jdata_el[cur_el.dataset.element][3]=$("#custom-link").val();
+    cur_el.style.backgroundImage="url('"+$("#custom-link").val()+"')";
+  }
+
+
   function populate(){
-    for(let i = gm_from; i <gm_until; i++) {
+    for(let i = Number(gm_from); i <Number(gm_until); i++) {
       if (jdata_el[i]){
 /*         if (!good_pics[i]){
           console.log(good_pics[i-1]);
           console.log(good_pics[i-2]);
         } */
         
-        let o = document.createElement("div");
-        o.classList.add("elem");
-        // if (old_pics_mode) {
-        //   o.style.backgroundImage="url('"+good_pics[i]["pic1"]+"')";
-        // }
-        
-        if (jdata_el[i][3]=="") {
-          o.style.backgroundImage="url('"+good_pics[i]["pic1"]+"')";
-          jdata_el[i][3]="url('"+good_pics[i]["pic1"]+"')";
-        }
-        else {
-          o.style.backgroundImage="url('"+jdata_el[i][3]+"')";
-          o.innerHTML+='<span class="elem-updated">❖</span>';
-        }
-          
-        o.classList.add("p"+jdata_el[i][0]);
-        o.dataset.element = i;
+        let o = makeElem(i,true);
         o.dataset.picn = 0;
-        o.innerHTML+="<span>";
-        o.innerHTML+='</span><span class="elem-name">'+jdata_el[i][1]+'</span><span class="elem-delete">ｘ</span>';
-
         $("#main-board").append(o);
       }
     }
@@ -139,9 +130,8 @@ function showRange(){
       else {
         cur_el= e.target;
         let el = cur_el.dataset.element;
-        console.log(cur_el);
-        $("#custom-link-wrap").show();
-        $("#traduc-wrap").show();
+
+        $(".edit-field").show();
 
         if ($(cur_el).has(".elem-updated").length<=0){
           if (cur_el.dataset.picn==8)
@@ -154,13 +144,58 @@ function showRange(){
           jdata_el[cur_el.dataset.element][3]=good_pics[cur_el.dataset.element]["pic"+g];
         }
         
+        $("#custom-name").val(jdata_el[el][1]);
         $("#custom-link").val(jdata_el[el][3]);
         $("#traducja").val(jdata_el[el][4]);
         $("#traducru").val(jdata_el[el][5]);
-        
+
+        let par1_i = jdata_eq[jdata_el[cur_el.dataset.element][6]][0];
+        let par2_i = jdata_eq[jdata_el[cur_el.dataset.element][6]][1];
+        let par1 = makePreviewElem(par1_i);
+        let par2 = makePreviewElem(par2_i);
+        $("#equation").empty();
+        $("#equation").append(par1);
+        $("#equation").append("&nbsp;＋&nbsp;")
+        $("#equation").append(par2);
       }
     });
   }
+
+  function makeElem(j){
+    let o = document.createElement("div");
+    o.classList.add("elem");
+    if (jdata_el[j][3]=="") {
+      o.style.backgroundImage="url('"+good_pics[j]["pic1"]+"')";
+      jdata_el[j][3]="url('"+good_pics[j]["pic1"]+"')";
+    }
+    else {
+      o.style.backgroundImage="url('"+jdata_el[j][3]+"')";
+      o.innerHTML+='<span class="elem-updated">❖</span>';
+    }
+    o.classList.add("p"+jdata_el[j][0]);
+    o.dataset.element = j;
+    o.innerHTML+="<span>";
+    o.innerHTML+='</span><span class="elem-name">'+jdata_el[j][1]+'</span><span class="elem-delete">ｘ</span>';
+    return o;
+  }
+
+  function makePreviewElem(j){
+    let o = document.createElement("div");
+    o.classList.add("preview-elem");
+    if (jdata_el[j][3]=="") {
+      o.style.backgroundImage="url('"+good_pics[j]["pic1"]+"')";
+    }
+    else {
+      o.style.backgroundImage="url('"+jdata_el[j][3]+"')";
+      o.innerHTML+='<span class="elem-updated">❖</span>';
+    }
+    o.classList.add("p"+jdata_el[j][0]);
+    o.dataset.element = j;
+    o.innerHTML+="<span>";
+    o.innerHTML+='</span><span class="elem-name">'+jdata_el[j][1];
+    return o;
+  }
+
   function download(content, fileName, contentType) {
     var a = document.createElement("a");
     var file = new Blob([content], {type: contentType});
@@ -168,6 +203,7 @@ function showRange(){
     a.download = fileName;
     a.click();
   }
+
   function saveAndDownload(){
     if($('#old-pics-check').checked) {
       $("#old-pics-check").prop("checked", false);
