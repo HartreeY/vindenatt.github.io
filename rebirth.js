@@ -20,13 +20,23 @@
 
   $(document).ready(function(){newGame();});
 
-  function countgg(){
-    // let gg=0;
-    // Object.keys(jdata_el).forEach(element => {
-    //   if(Number(element)!=(gg+1))
-    //     console.log("Ä");
-    // });
-    
+  function OPSave(){
+    for(let i = 4; i < 34; i++) {
+      if (jdata_el[i]){
+        story[i]["found"]=true;
+      }
+    }
+    for(let i = 244; i < 284; i++) {
+      if (jdata_el[i]){
+        story[i]["found"]=true;
+      }
+    }
+    for(let i = 1824; i < 1844; i++) {
+      if (jdata_el[i]){
+        story[i]["found"]=true;
+      }
+    }
+    populate();
   }
 
   function newGame(){
@@ -41,6 +51,8 @@
     story[2]["found"]=true;
     story[3]["found"]=true;
 
+    OPSave();
+
     for(let i = 0; i <4; i++) {
       o = document.createElement("div");
       o.classList.add("elem");
@@ -53,6 +65,7 @@
       $board.append(o);
     }
   }
+  
   function populate(){
     Object.keys(story).forEach(el => {
       if (story[el]["found"]){
@@ -104,7 +117,6 @@
 
       if ($(".elem-held-wrapper").length && droppable){
         //place back
-        console.log(event.target.classList);
         var found = false;
         var BreakException = {};
 
@@ -123,8 +135,6 @@
               const p = $(".elem-held-wrapper").offset().top-gg.offsetTop;
               //console.log(event.clientX+"  "+gg.getBoundingClientRect().x);
               //console.log(event.clientY+"  "+gg.getBoundingClientRect().y);
-              console.log(d);
-              console.log(p);
               window.removeEventListener("mousemove",mouseMove);
 
               
@@ -198,7 +208,7 @@
                 "px;--offset-x-zero:" + (0 === d ? "1" : "0")+ ";left:" + (o.offsetLeft-8) + "px;top:" + (o.offsetTop-17) + "px");
                 $(".combine").toggleClass("combine elem-found-wrapper");
                 setTimeout( function() {$(".elem-found-wrapper").remove();o.style.visibility="visible";droppable=true; if (exi){o.classList.toggle("restock");}
-                },1000);
+                },f*2);
                 
               },1000);
               throw BreakException;

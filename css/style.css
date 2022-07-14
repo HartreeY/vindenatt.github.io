@@ -36,7 +36,6 @@ a{
 }
 nav{
     display:flex;
-    
     max-width: 1000px;
     margin: 0 auto;
     justify-content:center;
@@ -44,7 +43,7 @@ nav{
 
 @font-face {
   font-family: remachine;
-  src: url(../remachine.ttf);
+  src: url(remachine.ttf);
 }
 
 aside {
@@ -57,6 +56,14 @@ aside div {
 
 aside textarea, input[type=text] {
   width: 100%;
+}
+
+aside input[type=text] {
+  margin-bottom: 8px;
+}
+
+.edit-field {
+  display:none;
 }
 
 .chock {
@@ -75,7 +82,7 @@ aside textarea, input[type=text] {
     display: flex;
     flex-wrap: wrap;
 }
-.elem {
+.elem, .preview-elem {
   display: inline-flex;
   flex-direction: column;
   text-align: center;
@@ -125,6 +132,16 @@ aside textarea, input[type=text] {
     z-index: 100;
   }
 
+  #equation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .preview-elem {
+    transform: scale(0.8);
+  }
+
   .deleted {
     animation: element-drop 0.6s cubic-bezier(.2,.01,1,.44) both, fade-out linear 0.5s both;
   }
@@ -170,13 +187,16 @@ aside textarea, input[type=text] {
     transition: 0.3s;
     background-color:black;
     color:white;
-    font-size:13px;
+    font-size:12px;
     position: absolute;
     pointer-events: none;
     align-self: center;
     z-index: 3;
     line-height: 1.1;
     bottom: -0.5rem;
+    overflow-wrap: break-word;
+    max-width: calc(1.2 * 60px * var(--element-scale));
+    width: max-content;
 }
 
 .elem-delete {
@@ -223,6 +243,7 @@ aside textarea, input[type=text] {
 aside button {
   font-size: 15px;
   margin: 0 10px;
+  margin-bottom: 8px;
   background: #24474e;
   color: white;
   text-align: center;
