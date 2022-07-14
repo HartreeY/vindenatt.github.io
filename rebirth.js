@@ -92,6 +92,15 @@ function changeName() {
   pla_name = $("#custom-name").val();
 }
 
+function notYet(ele) {
+  ele.classList.remove("restock");
+  ele.classList.add("notyet");
+  ele.addEventListener("animationend",function() {ele.classList.remove("notyet");});
+  snd_invalid.pause();
+  snd_invalid.currentTime = 0;
+  snd_invalid.play();
+}
+
 function dropElement() {
   let $sus = $(".elem-held-wrapper");
   $sus.addClass("elem-dropped-wrapper");
@@ -112,29 +121,18 @@ function dropElement() {
 }
 
 $(document).click(function (event) {
+
   if (!$(event.target).is('.elem') || $(event.target).is('.held')) {
     dropElement();
   }
   else {
     let gg = event.target;
     let $sus = $(".elem-held-wrapper .elem");
-    
-    if (pickable){
-      gg.classList.remove("restock");
-      setTimeout(function(){      gg.classList.add("restock");    },2);
-    }
-    else{
-      gg.classList.remove("restock");
-      gg.classList.add("notyet");
-      gg.addEventListener("animationend",function() {gg.classList.remove("notyet");});
-      snd_invalid.pause();
-      snd_invalid.currentTime = 0;
-      snd_invalid.play();
-    }
 
     if ($(".elem-held-wrapper").length) {
       if (!droppable){
-
+        notYet(gg);
+        console.log("ya");
       }
       else {
         var found = false;
@@ -248,6 +246,8 @@ $(document).click(function (event) {
       }
     }
     else if (pickable) {
+      gg.classList.remove("restock");
+      setTimeout(function(){      gg.classList.add("restock");    },2);
       snd_pickup.pause();
       snd_pickup.currentTime = 0;
       snd_pickup.play();
@@ -267,6 +267,9 @@ $(document).click(function (event) {
       wrapper.appendChild(n);
       $board.append(wrapper);
       window.addEventListener('mousemove', wrapMouseFollow);
+    }
+    else {
+      notYet(gg);
     }
   }
 
