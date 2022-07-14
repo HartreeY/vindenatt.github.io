@@ -91,6 +91,7 @@ aside input[type=text] {
   text-shadow: 2px 2px 2px black;
   position: relative;
   opacity: 80%;
+  transition: opacity 0.1s;
   user-select: none;
   width: calc(60px * var(--element-scale));
   height: calc(60px * var(--element-scale));
@@ -104,6 +105,17 @@ aside input[type=text] {
   opacity: 100%;
 }
 
+.elem-count {
+  font-weight: 700;
+  font-size: 16px;
+  text-shadow: 1px 1px 2px black;
+  text-align: right;
+}
+
+.elem-delete:hover {
+  opacity: 100%;
+}
+
 .elem.held {
     border: 1.5px solid rgba(0, 0, 0, 0.25);
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
@@ -111,6 +123,9 @@ aside input[type=text] {
 }
 .elem.restock {
     animation: element-restock 0.65s cubic-bezier(.29,.25,.09,1) 0.25s both;
+  }
+  .elem.opaque-restock {
+    animation: opaque-restock 0.65s cubic-bezier(.29,.25,.09,1) 0.25s both;
   }
   .elem.error {
     background-image: url(/no-element.svg);
@@ -184,7 +199,6 @@ aside input[type=text] {
 .elem-name {
     padding: 3px 6px;
     border-radius:16px;
-    transition: 0.3s;
     background-color:black;
     color:white;
     font-size:12px;
@@ -202,7 +216,8 @@ aside input[type=text] {
 .elem-delete {
   padding: 0px 2px;
   border-radius:16px;
-  transition: 0.3s;
+  opacity: 80%;
+  transition: opacity 0.1s;
   background-color:rgb(204, 1, 1);
   color:white;
   font-size:13px;
@@ -324,7 +339,7 @@ aside button {
     font-family: "Inter UI","SF Pro Display",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Open Sans","Helvetica Neue",sans-serif;
     font-size: 16px;
     font-weight: 500;
-    height: 4rem;
+    height: 3rem;
     padding: 0 1.6rem;
     text-align: center;
     text-shadow: rgb(0 0 0 / 25%) 0 3px 8px;
@@ -341,7 +356,7 @@ aside button {
 @keyframes top-bar-slide-in {
     from{transform:translateY(-30px)}
     to{transform:translateY(0)}
-  }
+}
   @keyframes element-restock {
     0% {
       opacity: 0.7;
@@ -349,6 +364,14 @@ aside button {
     }
     100% {
       opacity: 1;
+      transform: translateY(0px) scale(1);
+    }
+  }
+  @keyframes opaque-restock {
+    0% {
+      transform: translateY(6px) scale(0.85);
+    }
+    100% {
       transform: translateY(0px) scale(1);
     }
   }
@@ -417,6 +440,7 @@ aside button {
     }
     100% {
       transform: translateY(var(--offset-y))translateX(var(--offset-x))scale(1);
+      opacity: 80%;
     }
   }
   @keyframes element-found-reveal {
