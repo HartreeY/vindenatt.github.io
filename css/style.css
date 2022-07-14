@@ -11,7 +11,7 @@ main{
     background-color: #19373c;
     box-sizing: border-box;
     padding:30px;
-    font-family: 'Arial Narrow Bold';
+    font-family: system-ui;
     font-size:20px;
     font-weight: 200;
     color:white;
@@ -21,7 +21,7 @@ main{
 .main-grid{
     display:grid;
     grid-template-columns: 3fr 1fr;
-    height: 100vh;
+    height: 90vh;
 }
 a{
     text-decoration: none;
@@ -350,7 +350,17 @@ aside button {
 }
 .bitton:hover {
     box-shadow: rgb(80 63 205 / 50%) 0 1px 30px;
+    
     transition-duration: .1s;
+}
+
+.credit {
+  font-size: 16px;
+  color:rgb(198 210 213);
+  text-align: right;
+  position: absolute;
+  font-family: system-ui;
+  right: 20px;
 }
 
 @keyframes top-bar-slide-in {
