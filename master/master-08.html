@@ -234,9 +234,10 @@ function showRange(){
     saveAndDownload();
   }
 
-  $('#element-scale').change( function () {
-    document.documentElement.style.setProperty('--element-scale', $('#element-scale').val());
-  });
+  $('#element-scale').change(function () {
+  document.documentElement.style.setProperty('--element-scale', $('#element-scale').val());
+  document.documentElement.style.setProperty('--font-size', $('#element-scale').val()*11+"px");
+});
 
   $('#old-pics-check').change( function () {
     if(this.checked) {
