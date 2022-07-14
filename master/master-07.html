@@ -62,6 +62,7 @@
   var cur_el = null;
 
   const $board = $("#main-board");
+  const $aside = $("aside");
 
   var good_pics = jdata_pics.reduce(function(result, item) {
     result[item["id"]] = item;
@@ -131,7 +132,7 @@ function showRange(){
       if($(e.target).is(".elem-delete")) {
         let _this = e.target.parentElement;
         let el = _this.dataset.element;
-        console.log("Deleted "+el+" ("+jdata_el[el][1]+")");
+        $aside.append("<li style='font-size:smaller'>Deleted "+el+" ("+jdata_el[el][1]+")</li>");
         delete jdata_el[el];
         _this.classList.add("deleted");
 
