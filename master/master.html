@@ -48,6 +48,9 @@
           Main equation:
           <div id="equation"></div>
         </div>
+        <div class="edit-field">
+          <button onclick="google()">Google this</button>
+        </div>
         <div>
           Old pics vision<input class="chock" type="checkbox" id="old-pics-check" />
         </div>
@@ -58,7 +61,7 @@
         <div>
           <label class="feature-label"><input type="range" id="element-scale" name="element-scale" min="0.8" max="2" value="1" step="0.2">
           Element scale</label>
-          </div>
+        </div>
     </aside>
   </div>
   
@@ -67,6 +70,7 @@
   var cur_el = null;
 
   const $board = $("#main-board");
+  const $aside = $("aside");
 
   var good_pics = jdata_pics.reduce(function(result, item) {
     result[item["id"]] = item;
@@ -89,6 +93,10 @@ function showRange(){
   gm_until = $("#custom-gm-until").val();
 
   populate();
+}
+
+function google(){
+  window.open("https://www.google.com/search?q="+jdata_el[cur_el.dataset.element][1],"_blank");
 }
 
   function submitNames(){
@@ -122,10 +130,9 @@ function showRange(){
       if($(e.target).is(".elem-delete")) {
         let _this = e.target.parentElement;
         let el = _this.dataset.element;
-        console.log("Deleted "+el+" ("+jdata_el[el][1]+")");
+        $aside.append("<li style='font-size:smaller'>Deleted "+el+" ("+jdata_el[el][1]+")</li>");
         delete jdata_el[el];
         _this.classList.add("deleted");
-
       }
       else {
         cur_el= e.target;
@@ -133,7 +140,7 @@ function showRange(){
 
         $(".edit-field").show();
 
-        if ($(cur_el).has(".elem-updated").length<=0){
+        if ($(cur_el).has(".elem-updated").length<=0 && $(cur_el).hasClass("elem-selected")){
           if (cur_el.dataset.picn==8)
             cur_el.dataset.picn=0;
           else
@@ -157,6 +164,9 @@ function showRange(){
         $("#equation").append(par1);
         $("#equation").append("&nbsp;＋&nbsp;")
         $("#equation").append(par2);
+
+        $(".elem-selected").removeClass("elem-selected");
+        cur_el.classList.add("elem-selected");
       }
     });
   }

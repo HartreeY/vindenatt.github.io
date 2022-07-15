@@ -46,12 +46,51 @@ nav{
   src: url(remachine.ttf);
 }
 
+@media(max-width: 630px) {
+  .main-grid{
+    grid-template-columns: 1fr;
+    height: 90vh;
+  }
+  #main-board {
+    justify-content: center !important;
+  }
+  .credit {
+    visibility: hidden;
+  }
+}
+@media(max-width: 420px) {
+  :root{
+    --element-scale: 1.2;
+    --font-size: 13.2px;
+  }
+  main {
+    padding:6% !important;
+  }
+  .elem {
+    width:24% !important;
+    margin:2% !important;
+  }
+}
+
 aside {
   text-align: center;
+  /* display: flex;
+  justify-content: space-evenly;
+  flex-direction: column; */
+}
+
+aside hr {
+  width: 100%;
 }
 
 aside div {
-  margin-bottom: 7%;
+  margin-bottom:5%;
+  word-break: break-word;
+}
+
+.elem-selected {
+  outline: 3px double;
+  outline-offset: -1px;
 }
 
 aside textarea, input[type=text] {
@@ -97,6 +136,7 @@ aside input[type=text] {
   height: calc(60px * var(--element-scale));
   padding: calc(5px * var(--element-scale));
   border-radius: calc(15px * var(--element-scale));
+  font-size: var(--is-too-fat,14px);
   font-size: calc(40px * var(--element-scale));
   margin: calc(12px * var(--element-scale)) calc(7.5px * var(--element-scale));
   box-shadow: 0 calc(3px * var(--element-scale)) calc(10px * var(--element-scale)) rgba(0, 0, 0, 0.18);
@@ -105,11 +145,14 @@ aside input[type=text] {
   opacity: 100%;
 }
 
+
+
 .elem-count {
   font-weight: 700;
   font-size: 16px;
   text-shadow: 1px 1px 2px black;
   text-align: right;
+  pointer-events: none;
 }
 
 .elem-delete:hover {
@@ -176,6 +219,7 @@ aside input[type=text] {
   }
   .notyet {
     animation: error-shake 0.6s both;
+    opacity: 80%;
   }
   .elem-held-wrapper {
     animation: element-grab-x 0.28s both;
@@ -238,6 +282,7 @@ aside input[type=text] {
   top: 1.2rem;
   right: 0.3rem;
   z-index: 3;
+  pointer-events: none;
 }
 
 .feature-label{
@@ -246,6 +291,7 @@ aside input[type=text] {
     background:black;
     color:white;
     font-size:16px;
+    display: inline-flex;
 }
 
 .input-number {
@@ -356,7 +402,7 @@ aside button {
     box-shadow: rgb(80 63 205 / 50%) 0 1px 30px;
     
     transition-duration: .1s;
-}
+  }
 
 .credit {
   font-size: 16px;
@@ -373,11 +419,9 @@ aside button {
 }
   @keyframes element-restock {
     0% {
-      opacity: 0.7;
       transform: translateY(6px) scale(0.85);
     }
     100% {
-      opacity: 0.8;
       transform: translateY(0px) scale(1);
     }
   }

@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
   <link rel="stylesheet" href="css/style.css">
   <script type="text/javascript" src="elements.json2"></script>
   <script type="text/javascript" src="equations.json2"></script>
-  <!-- <script type="text/javascript" src="pics.js"></script> -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
   <title>Elemental: Rebirth</title>
@@ -36,6 +35,12 @@
       <div id="aside-feature">
         <textarea id="custom-name" style="width:100%"></textarea><br>
         <button onclick="changeName()">Change name</button>
+      </div>
+      <div class="edit-field" id="desc" >
+        
+      </div>
+      <div class="edit-field">
+        <button onclick="google()">Google this</button>
       </div>
       <div class="aside-feature">
       <label class="feature-label"><input type="range" id="element-scale" name="element-scale" min="0.8" max="2" value="1" step="0.2">
