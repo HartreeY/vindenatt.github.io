@@ -12,10 +12,10 @@ main{
     box-sizing: border-box;
     padding:30px;
     font-family: system-ui;
-    font-size:20px;
+    font-size:18px;
     font-weight: 200;
     color:white;
-    border:solid crimson 1px;
+    border: outset #1d818e 2px;
     line-height: 1.5;
 }
 .main-grid{
@@ -70,10 +70,14 @@ nav{
     width:24% !important;
     margin:2% !important;
   }
+  .elem.held {
+    width:450% !important;
+  }
 }
 
 aside {
   text-align: center;
+  background: linear-gradient(45deg, #19132a, #12454b);
   /* display: flex;
   justify-content: space-evenly;
   flex-direction: column; */
@@ -85,7 +89,6 @@ aside hr {
 
 aside div {
   margin-bottom:5%;
-  word-break: break-word;
 }
 
 .elem-selected {
@@ -95,10 +98,8 @@ aside div {
 
 aside textarea, input[type=text] {
   width: 100%;
-}
-
-aside input[type=text] {
-  margin-bottom: 8px;
+  font-family: system-ui;
+  resize: vertical;
 }
 
 .edit-field {
@@ -182,22 +183,52 @@ aside input[type=text] {
   .combine .elem {
     animation: element-combine-x 0.28s cubic-bezier(.5,.5,.5,1) both;
   }
-  .elem-held-wrapper, .elem-found-wrapper, .elem-error-wrapper,.elem-dropped-wrapper {
+  .elem-held-wrapper, .elem-found-wrapper, .elem-error-wrapper,.elem-dropped-wrapper,.elem-exploded-wrapper,.flying-pelmen {
     position: absolute;
     top: 0;
     left: 0;
     pointer-events: none;
-    z-index: 100;
+    z-index: 10;
+  }
+
+  #prop-desc {
+    word-break: break-word;
+  }
+
+  #prop-name {
+    font-weight:700;
+  }
+
+  #prop-id {
+    padding: 0 8px;
+    border: 1px solid white;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size:14px;
+    margin-left:6px;
   }
 
   #equation {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     align-items: center;
   }
 
+  #edit-equation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .preview-elem {
-    transform: scale(0.8);
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    border-radius:15px;
+    font-size: var(--is-too-fat,14px);
+    font-size: calc(40px * var(--element-scale));
+    margin: 12px 7.5px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.18);
   }
 
   .deleted {
@@ -213,6 +244,9 @@ aside input[type=text] {
   }
   .elem-error-wrapper {
     animation: error-wrapper 0.85s both;
+  }
+  .elem-exploded-wrapper {
+    animation: element-explosion 0.50s both;
   }
   .elem-error-wrapper .elem {
     animation: error-shake 0.6s both;
@@ -241,6 +275,10 @@ aside input[type=text] {
   }
   .elem.held::after { /* the hover color */
     animation: element-grab-hover 0.1s linear both;
+  }
+
+  .flying-pelmen {
+    animation: element-found-move-y var(--calculated-animation-time) 1.25s both,element-found-move-x var(--calculated-animation-time) 1.25s;
   }
 
 .elem-name {
@@ -294,6 +332,10 @@ aside input[type=text] {
     display: inline-flex;
 }
 
+.item-bar img {
+  image-rendering: pixelated;
+}
+
 .input-number {
   width: 3.5rem;
   font-size: 20px;
@@ -305,14 +347,25 @@ aside input[type=text] {
   padding: 6px;
 }
 
+.input-name {
+  min-width: 3.5rem;
+  font-size: 16px;
+  background: #102327;
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 6px;
+  padding: 6px;
+}
+
 aside button {
-  font-size: 15px;
-  margin: 0 10px;
-  margin-bottom: 8px;
+  font-size: 14px;
+  margin: 0 5px;
+/*   margin-bottom: 8px; */
   background: #24474e;
   color: white;
   text-align: center;
-  /* border: 1px solid rgb(137, 192, 192); */
+  border: 2px outset rgb(50 87 87);
   border-radius: 6px;
   padding: 6px;
 }
@@ -423,6 +476,17 @@ aside button {
     }
     100% {
       transform: translateY(0px) scale(1);
+    }
+  }
+  @keyframes element-explosion {
+    0% {
+      transform: scale(1.2);
+    }
+    50% {
+      transform: scale(1.0);
+    }
+    100% {
+      transform: scale(0);
     }
   }
   @keyframes opaque-restock {
@@ -690,3 +754,7 @@ aside button {
     }
   }
   
+  .explosion {
+    transform: scale(80%);
+    z-index:40;
+  }

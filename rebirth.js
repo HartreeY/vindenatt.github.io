@@ -1,11 +1,14 @@
-var version = "0.0.1";
+var version = "0.0.3";
 
 var story = [];
+var cnt_pelmen = 0;
+var cnt_coin = 0;
 
 var cur_el = null;
 var droppable = true;
 var pickable = true;
 var wrapper = null;
+var volume_all = 0.8;
 
 var snd_combine = new Audio('./sound/element-combine.mp3');
 var snd_drop = new Audio('./sound/element-drop.mp3');
@@ -17,6 +20,7 @@ var snd_click = new Audio('./sound/popup-click.mp3');
 var snd_close = new Audio('./sound/popup-close.mp3');
 var snd_open = new Audio('./sound/popup-open.mp3');
 var snd_start = new Audio('./sound/startup.mp3');
+var snd_explode = new Audio('./sound/element-explode.wav');
 
 const $inp = $("#input-load");
 const $board = $("#main-board");
@@ -116,7 +120,22 @@ function dropElement() {
     $sus.addClass("drop");
     $sus.on("animationend", function () {
       $sus.remove();
+      $(".explosion").remove();
       /* console.log("animend"); */
+    });
+  }
+}
+
+function explodeElement() {
+  let $sus = $(".elem-held-wrapper");
+  $sus.addClass("elem-exploded-wrapper");
+  $sus.removeClass("elem-held-wrapper");
+  window.removeEventListener("mousemove", wrapMouseFollow);
+  if ($sus.length) {
+    playSound(snd_explode);
+    $sus.on("animationend", function () {
+      $sus.remove();
+      $(".explosion").remove();
     });
   }
 }
@@ -124,6 +143,7 @@ function dropElement() {
 function playSound(snd){
   snd.pause();
   snd.currentTime = 0;
+  snd.volume = volume_all;
   snd.play();
 }
 
@@ -143,8 +163,8 @@ $(document).click(function (event) {
 
         try {
           Object.values(jdata_eq).forEach(value => {
-            if ((value[0] == (gg.dataset.element) && value[1] == ($sus.data("element"))) ||
-              (value[1] == (gg.dataset.element) && value[0] == ($sus.data("element")))) {
+            if ((jdata_el[value[2]]) && ((value[0] == (gg.dataset.element) && value[1] == ($sus.data("element"))) ||
+              (value[1] == (gg.dataset.element) && value[0] == ($sus.data("element"))))) {
               found = true;
               playSound(snd_combine);
               droppable = false;
@@ -183,7 +203,6 @@ $(document).click(function (event) {
                   setTimeout(function(){      o.classList.add("restock");    },2);
                   exi = true;
                 } else {
-
                   o = document.createElement("div");
                   o.classList.add("elem");
 
@@ -195,30 +214,28 @@ $(document).click(function (event) {
                   else
                     o.innerHTML = '<span class="elem-count"></span>';
                   o.innerHTML += '</span><span class="elem-name">' + jdata_el[value[2]][1] + '</span>';
-
                   o.style.visibility = "hidden";
-                  //o.lastChild.style.visibility = "hidden";
 
                   $board.append(o);
                 }
 
                 o.scrollIntoView({ behavior: "smooth", block: "center" });
 
-                const n = o.cloneNode(true);
-                n.style.visibility = "unset";
+                let n = o.cloneNode(true);
                 
                 $(n).children(".elem-count").html('');
                 n.classList.add("held");
-                const g = document.createElement("div");
-                g.setAttribute("style", "left:" + event.pageX + "px;top:" + (event.pageY + 4) + "px");
-                g.classList.toggle("elem-held-wrapper");
-                g.classList.toggle("combine");
-                g.appendChild(n);
+                n.style.visibility="revert";
 
+                let g = document.createElement("div");
+                g.setAttribute("style", "left:" + event.pageX + "px;top:" + (event.pageY + 4) + "px");
+                g.classList.toggle("combine");
+                console.log(g.classList);
+                g.appendChild(n);
                 $board.append(g);
 
-                const d = o.offsetLeft - gg.offsetLeft;
-                const p = o.offsetTop - gg.offsetTop;
+                let d = o.offsetLeft - gg.offsetLeft;
+                let p = o.offsetTop - gg.offsetTop;
                 h = (.95 * (d ** 2 + (4 * p) ** 2)) ** .4;
                 f = Math.max(260, Math.min(250 + h, 1e3));
                 //console.log(d+"  "+p);
@@ -239,7 +256,27 @@ $(document).click(function (event) {
           if (ff !== BreakException) throw ff;
         }
         if (!found) {
-          dropElement();
+          $board.append("<img class='explosion' src='./images/Z92e.gif'></img>");
+          $board.children(".explosion").css({top: (gg.offsetTop-20)+"px", left: (gg.offsetLeft-20)+"px", position:'absolute'});
+          explodeElement();
+
+          let u = document.getElementById("pelmen-count");
+          $(u).html(++cnt_pelmen);
+
+          let g = document.createElement("img");
+          g.src='./images/pelmen.png';
+          g.classList.toggle("flying-pelmen");
+          g.setAttribute("style", "left:" + gg.offsetLeft + "px;top:" + gg.offsetTop + "px");
+          let d = u.offsetLeft - gg.offsetLeft;
+          let p = u.offsetTop - gg.offsetTop;
+          h = (.95 * (d ** 2 + (4 * p) ** 2)) ** .4;
+          f = Math.max(260, Math.min(250 + h, 1e3));
+          console.log(d+"  "+p);
+          console.log(g.style.left+"  "+g.style.top);
+          console.log(event.pageX+"  "+event.pageY);
+          $(g).attr("style", "--calculated-animation-time:" + f + "ms;" + "--offset-x:" + (-d) + "px;--offset-y:" + (-p) +
+            "px;--offset-x-zero:" + (0 === d ? "1" : "0") + ";left:" + (o.offsetLeft - 8) + "px;top:" + (o.offsetTop - 17) + "px");
+          $board.append(g);
         }
       }
     }
@@ -247,9 +284,7 @@ $(document).click(function (event) {
       if (pickable) {
         gg.classList.remove("restock");
         setTimeout(function(){      gg.classList.add("restock");    },2);
-        snd_pickup.pause();
-        snd_pickup.currentTime = 0;
-        snd_pickup.play();
+        playSound(snd_pickup);
 
         const n = gg.cloneNode(true);
         $(n).children(".elem-count").html('');
@@ -276,11 +311,13 @@ $(document).click(function (event) {
       cur_el = gg;
       cur_el.classList.add("elem-selected");
       $(".edit-field").show();
-      $("#desc").empty();
-      $("#desc").append("<div style='font-weight:800'>"+jdata_el[cur_el.dataset.element][1]+"</div>");
-      $("#desc").append("<div>"+jdata_el[cur_el.dataset.element][2]+"</div>");
+      
+      $("#prop-name").empty();
+      $("#prop-name").append(jdata_el[cur_el.dataset.element][1]+"<span id='prop-id'>"+cur_el.dataset.element+"</span>");
+      $("#prop-desc").empty();
+      $("#prop-desc").append(jdata_el[cur_el.dataset.element][2]);
       if (jdata_el[cur_el.dataset.element][11])
-        $("#desc").append("<div>"+jdata_el[cur_el.dataset.element][11]+"</div>");
+        $("#prop-desc").append(jdata_el[cur_el.dataset.element][11]);
     }
   }
   else if ($(".elem-held-wrapper").length>0) {
@@ -300,6 +337,10 @@ $('#element-scale').change(function () {
   document.documentElement.style.setProperty('--element-scale', $('#element-scale').val());
   if (document.documentElement.style.getPropertyValue('--element-scale')<=1.2)
     document.documentElement.style.setProperty('--font-size', $('#element-scale').val()*11+"px");
+});
+
+$('#volume-range').change(function () {
+  volume_all = $('#volume-range').val();
 });
 
 function download(content, fileName, contentType) {

@@ -12,7 +12,7 @@
   }
 
   //----------------get equations---------------
-  $sql0 = "SELECT id,parent1,parent2,child FROM equations";
+/*   $sql0 = "SELECT id,parent1,parent2,child FROM equations";
   $result0 = mysqli_query($conn, $sql0);
 
   $data_eq = array();
@@ -20,21 +20,22 @@
   while($enr = mysqli_fetch_assoc($result0)){
       $data_eq[$enr['id']] = array($enr['parent1'], $enr['parent2'], $enr['child']);
 
-  } 
+  }  */
   //--------------------------------------------
   //----------------get elements----------------
-  $sql1 = "SELECT id,color,name,content,image FROM elements WHERE id between 1401 and 1500";
+
+  $sql1 = "SELECT id,color,name FROM elements WHERE id between 2201 and 2300;";
   $result1 = mysqli_query($conn, $sql1);
 
   $data_el = array();
 
   while($enr = mysqli_fetch_assoc($result1)){
-      $data_el[$enr['id']] = array($enr['color'], $enr['name'], $enr['content'],$enr['image']);
+      $data_el[$enr['id']] = $enr['name'];
 
       include_once 'simple_html_dom.php';
 
       //echo "https://www.google.com/search?q=" . $data_el[$i][0] . '&tbm=isch'; 
-      $newname = "https://www.google.com/search?q=" . rawurlencode($data_el[$enr['id']][1]) . '&tbm=isch';
+      $newname = "https://www.google.com/search?q=" . rawurlencode($data_el[$enr['id']]) . '&tbm=isch';
 
       $html = file_get_html($newname);
       $picarray = array();
@@ -53,6 +54,7 @@
       $sql3 = "UPDATE elements SET image = '". $picarray[1] . "' WHERE id = ".$enr['id'].";";
       $result3 = mysqli_query($conn, $sql3);
   }
+
   //--------------------------------------------
         
 ?><!DOCTYPE HTML>

@@ -32,11 +32,20 @@
       </div>
     </main>
     <aside>
-      <div id="aside-feature">
-        <textarea id="custom-name" style="width:100%"></textarea><br>
+      <div class="aside-feature item-bar">
+          <img src="./images/coin.png"/><span id="coin-count">0</span>
+
+          <img src="./images/pelmen.png"/><span id="pelmen-count">0</span>
+
+      </div>
+      <div class="aside-feature">
+        <input type="text" id="custom-name" style="font-size:20px;"></input><br>
         <button onclick="changeName()">Change name</button>
       </div>
-      <div class="edit-field" id="desc" >
+      <div class="edit-field" id="prop-name" >
+        
+      </div>
+      <div class="edit-field" id="prop-desc" >
         
       </div>
       <div class="edit-field">
@@ -45,6 +54,8 @@
       <div class="aside-feature">
       <label class="feature-label"><input type="range" id="element-scale" name="element-scale" min="0.8" max="2" value="1" step="0.2">
       Element scale</label>
+      <label class="feature-label"><input type="range" id="volume-range" name="volume-range" min="0" max="1" value="0.8" step="0.1">
+      Volume</label>
       </div>
       <div>
         <input type="file" id="input-load" name="input-load" style="display: none;"  accept=".sav" />
