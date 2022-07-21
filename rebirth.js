@@ -24,6 +24,7 @@ var snd_explode = new Audio('./sound/element-explode.wav');
 
 const $inp = $("#input-load");
 const $board = $("#main-board");
+const $pnewelem = $("#popup-new-elem")
 
 $(document).ready(function () {
   $("#index-h1").append("<small>" + version + "</small>");
@@ -149,8 +150,13 @@ function playSound(snd){
 
 
 $(document).click(function (event) {
-  if ($(event.target).is('.elem')) {
-    let gg = event.target;
+  let gg = event.target;
+
+  if ($(gg).is('#popup-new-elem')) {
+    $pnewelem.hide();
+  }
+  else if ($(gg).is('.elem')) {
+
     let $sus = $(".elem-held-wrapper .elem");
 
     if ($(".elem-held-wrapper").length>0) {
@@ -217,6 +223,8 @@ $(document).click(function (event) {
                   o.style.visibility = "hidden";
 
                   $board.append(o);
+
+                  popupNewElem(value[2]);
                 }
 
                 o.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -361,6 +369,28 @@ function extendJDataEl(arg) {     //use like extendJDataEl("");
     element.push(arg);
   });
 }
+
+function randInt(max){
+  return Math.floor(Math.random() * max);
+}
+
+function randEl(arr){
+  return arr[Math.floor(Math.random()*arr.length)];
+}
+
+function popupNewElem(ele) {
+  $("#popup-new-elem-name").html(jdata_el[ele][1]);
+  if (jdata_el[ele][11])
+    $("#popup-new-elem-desc").html(jdata_el[ele][11]+"<br/>This fecker also said:");
+  else
+    $("#popup-new-elem-desc").html(randEl(sayings));
+  $("#popup-new-elem-mark").html(jdata_el[ele][2]);
+  $pnewelem.show();
+}
+
+$("#popup-new-elem-close").click(function() {
+  $pnewelem.hide();
+});
 
 function loadStory() {
   $inp.click();
