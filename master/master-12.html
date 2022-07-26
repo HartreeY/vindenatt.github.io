@@ -1,0 +1,308 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../images/favicon-32x32.png">
+  <link rel="stylesheet" href="../css/style.css">
+  <script type="text/javascript" src="../elements.json2"></script>
+  <script type="text/javascript" src="../equations.json2"></script>
+  <script type="text/javascript" src="../pics.json2"></script>
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script type="text/javascript">const gm_num = "12";var gm_from = 1100;var gm_until = 1200;const old_pics_mode = false;</script>
+  
+  <title>Elemental: Rebirth</title>
+</head>
+<body>
+
+  <nav>
+    <h1 style="font-family: remachine" id="gm-h1">Game Master's Chamber </h1>
+    <span style="position: absolute;    right: 8px;    top: 24px;">
+      <button class="bitton" onclick="saveAndDownload()">Save and download</button>
+    </span>
+  </nav>
+
+  <div class="main-grid">
+    <main>
+      <div id="main-board">
+
+      </div>
+    </main>
+    <aside>
+      
+        <div class="aside-feature">
+          <input type="text" class="input-number" id="custom-gm-from" placeholder=""></input>&nbsp;&nbsp;ー&nbsp;&nbsp;
+          <input type="text" class="input-number" id="custom-gm-until" placeholder=""></input>
+          <button onclick="showRange()">Go</button>
+        </div>
+        <div style="font-size:12px">❖ ー previously updated</div>
+        <div style="display:flex" style="margin-bottom:0">
+          <div class="edit-field" style="margin-bottom:0">
+            <input type="text" class="input-name" id="custom-name" placeholder="" style="width:auto"></input>
+            <input type="text" class="input-name" id="traducja" placeholder="Japanese" style="width:auto"></input>
+            <input type="text" class="input-name" id="traducru" placeholder="Russian" style="width:auto"></input>
+          </div>
+          <div class="edit-field" style="margin-bottom:0">
+            <div id="prop-id" style="margin-left:0"></div>
+            <button onclick="google()">Google this</button>
+          </div>
+        </div>
+        <div class="edit-field">
+          <textarea id="custom-link"></textarea>
+        </div>
+        
+        <div class="edit-field" id="edit-equation">
+          Main equation:&nbsp;
+          <span id="equation"></span>
+        </div>
+        <div class="edit-field">
+          <textarea id="prop-desc" class="input-name"></textarea>
+          <textarea id="prop-mark" class="input-name" rows="5"></textarea>
+          <button onclick="submitChanges()">Submit changes</button>
+        </div>
+        <div>
+          Old pics vision<input class="chock" type="checkbox" id="old-pics-check" />
+        </div>
+        <hr>
+        <div>
+          <label class="feature-label"><input type="range" id="element-scale" name="element-scale" min="0.8" max="2" value="1" step="0.2">
+          Element scale</label>
+        </div>
+    </aside>
+  </div>
+  
+</body>
+<script type="text/javascript">
+  var cur_el = null;
+
+  const $board = $("#main-board");
+  const $aside = $("aside");
+
+  var good_pics = jdata_pics.reduce(function(result, item) {
+    result[item["id"]] = item;
+    return result;
+    }, {});
+
+  $(document).ready(function(){
+    $("#gm-h1").append(gm_num);
+    populate();
+
+    $("#custom-gm-from").attr("placeholder",gm_from);
+    $("#custom-gm-until").attr("placeholder",gm_until);
+  
+    
+  });
+
+  function showRange(){
+    $board.empty();
+    gm_from = $("#custom-gm-from").val();
+    gm_until = $("#custom-gm-until").val();
+
+    populate();
+  }
+
+  function google(){
+    window.open("https://www.google.com/search?q="+jdata_el[cur_el.dataset.element][1],"_blank");
+  }
+
+  function submitChanges(){
+    submitNames();
+    submitCustomImg();
+    submitDescs();
+  }
+
+  function submitNames(){
+    jdata_el[cur_el.dataset.element][1]=$("#custom-name").val();
+    $(cur_el).children(".elem-name").html($("#custom-name").val());
+    jdata_el[cur_el.dataset.element][4]=$("#traducja").val();
+    jdata_el[cur_el.dataset.element][5]=$("#traducru").val();
+  }
+
+  function submitDescs(){
+    jdata_el[cur_el.dataset.element][2]=$("#prop-mark").val();
+    jdata_el[cur_el.dataset.element][11]=$("#prop-desc").val();
+  }
+
+  function submitCustomImg(){
+    jdata_el[cur_el.dataset.element][3]=$("#custom-link").val();
+    cur_el.style.backgroundImage="url('"+$("#custom-link").val()+"')";
+  }
+
+
+  function populate(){
+    for(let i = Number(gm_from); i <Number(gm_until); i++) {
+      if (jdata_el[i]){
+  /*         if (!good_pics[i]){
+          console.log(good_pics[i-1]);
+          console.log(good_pics[i-2]);
+        } */
+        
+        let o = makeElem(i,true);
+        o.dataset.picn = 0;
+        $("#main-board").append(o);
+      }
+    }
+
+    $(".elem").click(function(e) {
+      if($(e.target).is(".elem-delete")) {
+        let _this = e.target.parentElement;
+        let el = _this.dataset.element;
+        $aside.append("<li style='font-size:smaller'>Deleted "+el+" ("+jdata_el[el][1]+")</li>");
+        delete jdata_el[el];
+        _this.classList.add("deleted");
+      }
+      else {
+        cur_el= e.target;
+        let el = cur_el.dataset.element;
+
+        $(".edit-field").show();
+
+        if ($(cur_el).has(".elem-updated").length<=0 && $(cur_el).hasClass("elem-selected")){
+          if (cur_el.dataset.picn==8)
+            cur_el.dataset.picn=0;
+          else
+            cur_el.dataset.picn++;
+          
+          var g = (Number(cur_el.dataset.picn)+1);
+          cur_el.style.backgroundImage="url('"+good_pics[cur_el.dataset.element]["pic"+g]+"')";
+          jdata_el[cur_el.dataset.element][3]=good_pics[cur_el.dataset.element]["pic"+g];
+        }
+        
+        $("#custom-name").val(jdata_el[el][1]);
+        $("#custom-link").val(jdata_el[el][3]);
+        $("#traducja").val(jdata_el[el][4]);
+        $("#traducru").val(jdata_el[el][5]);
+
+        let par1_i = jdata_eq[jdata_el[cur_el.dataset.element][6]][0];
+        let par2_i = jdata_eq[jdata_el[cur_el.dataset.element][6]][1];
+        let par1 = makePreviewElem(par1_i);
+        let par2 = makePreviewElem(par2_i);
+        
+        $("#equation").empty();
+        $("#equation").append(par1);
+        $("#equation").append("&nbsp;＋&nbsp;")
+        $("#equation").append(par2);
+
+        $("#prop-id").empty();
+        $("#prop-id").append(cur_el.dataset.element);
+        
+        $("#prop-mark").empty();
+        if (jdata_el[cur_el.dataset.element][2])
+          $("#prop-mark").val(jdata_el[cur_el.dataset.element][2]);
+        
+        $("#prop-desc").empty();
+        if (jdata_el[cur_el.dataset.element][11])
+          $("#prop-desc").val(jdata_el[cur_el.dataset.element][11]);
+
+        $(".elem-selected").removeClass("elem-selected");
+        cur_el.classList.add("elem-selected");
+      }
+    });
+  }
+
+  function makeElem(j){
+    let o = document.createElement("div");
+    o.classList.add("elem");
+    if (jdata_el[j][3]=="") {
+      if (good_pics[j]){
+        o.style.backgroundImage="url('"+good_pics[j]["pic1"]+"')";
+        jdata_el[j][3]="url('"+good_pics[j]["pic1"]+"')";
+      }
+    }
+    else {
+      o.style.backgroundImage="url('"+jdata_el[j][3]+"')";
+      o.innerHTML+='<span class="elem-updated">❖</span>';
+    }
+    o.classList.add("p"+jdata_el[j][0]);
+    o.dataset.element = j;
+    o.innerHTML+="<span>";
+    o.innerHTML+='</span><span class="elem-name">'+jdata_el[j][1]+'</span><span class="elem-delete">ｘ</span>';
+    return o;
+  }
+
+  function makePreviewElem(j){
+    let o = document.createElement("div");
+    o.classList.add("preview-elem");
+    if (jdata_el[j]){
+      if (jdata_el[j][3]=="") {
+        if (good_pics[j])
+          o.style.backgroundImage="url('"+good_pics[j]["pic1"]+"')";
+      }
+      else {
+        o.style.backgroundImage="url('"+jdata_el[j][3]+"')";
+        o.innerHTML+='<span class="elem-updated">❖</span>';
+      }
+      o.classList.add("p"+jdata_el[j][0]);
+      o.dataset.element = j;
+      o.innerHTML+="<span>";
+      o.innerHTML+='</span><span class="elem-name">'+jdata_el[j][1];
+    }
+    else {
+      o.innerHTML+="<span style='color:red;font-size:initial'>Deleted</span>";
+    }
+    return o;
+  }
+
+  function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+  }
+
+  function saveAndDownload(){
+    if($('#old-pics-check').checked) {
+      $("#old-pics-check").prop("checked", false);
+    }
+    
+    let res_el = "var jdata_el = ";
+    res_el += JSON.stringify(jdata_el);
+    res_el += ";";
+    download(res_el, 'elements-'+gm_num+'.json2', 'text/plain');
+  }
+  
+  function appendOldAndTraduc(){
+    var good_old_data = new Object();
+    for (let i=0;i<old_data.length;i++){
+      good_old_data[old_data[i]["id"]] = old_data[i];
+    }
+    
+    Object.keys(jdata_el).forEach(el => {
+      jdata_el[el][2]=good_old_data[el]["mark"];
+      jdata_el[el][4]="";
+      jdata_el[el][5]="";
+      jdata_el[el][6]=Number(good_old_data[el]["originalEquation"]);
+      jdata_el[el][7]=Number(good_old_data[el]["owners"]);
+      jdata_el[el][8]=Number(good_old_data[el]["prevalence"]);
+      jdata_el[el][9]=Number(good_old_data[el]["usefulness"]);
+      jdata_el[el][10]=2;
+    });
+    saveAndDownload();
+  }
+
+  $('#element-scale').change(function () {
+  document.documentElement.style.setProperty('--element-scale', $('#element-scale').val());
+  if (document.documentElement.style.getPropertyValue('--element-scale')<=1.2)
+    document.documentElement.style.setProperty('--font-size', $('#element-scale').val()*11+"px");
+  });
+
+  $('#old-pics-check').change( function () {
+    if(this.checked) {
+      $.each($(".elem"), function (index, item) {
+        let i = item.dataset.element;
+        if ($(item).has(".elem-updated"))
+          item.style.backgroundImage="url('"+good_pics[i]["pic1"]+"')";
+      });
+    }
+    else {
+      $.each($(".elem"), function (index, item) {
+        let i = item.dataset.element;
+        if ($(item).has(".elem-updated"))
+          item.style.backgroundImage="url('"+jdata_el[i][3]+"')";
+      });
+    }
+  });
+
+</script>

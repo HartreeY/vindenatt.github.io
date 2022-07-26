@@ -45,6 +45,10 @@ nav{
   font-family: remachine;
   src: url(remachine.ttf);
 }
+@font-face {
+  font-family: yug;
+  src: url(yugothib.ttf);
+}
 
 @media(max-width: 630px) {
   .main-grid{
