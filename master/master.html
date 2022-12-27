@@ -10,7 +10,8 @@
   <script type="text/javascript" src="../equations.json2"></script>
   <script type="text/javascript" src="../pics.json2"></script>
   <script type="text/javascript" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script type="text/javascript">const gm_num = "00";var gm_from = 0;var gm_until = 50;const old_pics_mode = false;</script>
+
+  <script type="text/javascript">const gmNum = "00";var gmFrom = 0;var gmUntil = 50;const oldPicsMode = false;</script>
   
   <title>Elemental: Rebirth</title>
 </head>
@@ -74,36 +75,36 @@
   
 </body>
 <script type="text/javascript">
-  var cur_el = null;
+  var curEl = null;
 
   const $board = $("#main-board");
   const $aside = $("aside");
 
-  var good_pics = jdata_pics.reduce(function(result, item) {
+  var goodPics = jdataPics.reduce(function(result, item) {
     result[item["id"]] = item;
     return result;
     }, {});
 
   $(document).ready(function(){
-    $("#gm-h1").append(gm_num);
+    $("#gm-h1").append(gmNum);
     populate();
 
-    $("#custom-gm-from").attr("placeholder",gm_from);
-    $("#custom-gm-until").attr("placeholder",gm_until);
+    $("#custom-gm-from").attr("placeholder",gmFrom);
+    $("#custom-gm-until").attr("placeholder",gmUntil);
   
     
   });
 
   function showRange(){
     $board.empty();
-    gm_from = $("#custom-gm-from").val();
-    gm_until = $("#custom-gm-until").val();
+    gmFrom = $("#custom-gm-from").val();
+    gmUntil = $("#custom-gm-until").val();
 
     populate();
   }
 
   function google(){
-    window.open("https://www.google.com/search?q="+jdata_el[cur_el.dataset.element][1],"_blank");
+    window.open("https://www.google.com/search?q="+jdataEls[curEl.dataset.element][1],"_blank");
   }
 
   function submitChanges(){
@@ -113,29 +114,29 @@
   }
 
   function submitNames(){
-    jdata_el[cur_el.dataset.element][1]=$("#custom-name").val();
-    $(cur_el).children(".elem-name").html($("#custom-name").val());
-    jdata_el[cur_el.dataset.element][4]=$("#traducja").val();
-    jdata_el[cur_el.dataset.element][5]=$("#traducru").val();
+    jdataEls[curEl.dataset.element][1]=$("#custom-name").val();
+    $(curEl).children(".elem-name").html($("#custom-name").val());
+    jdataEls[curEl.dataset.element][4]=$("#traducja").val();
+    jdataEls[curEl.dataset.element][5]=$("#traducru").val();
   }
 
   function submitDescs(){
-    jdata_el[cur_el.dataset.element][2]=$("#prop-mark").val();
-    jdata_el[cur_el.dataset.element][11]=$("#prop-desc").val();
+    jdataEls[curEl.dataset.element][2]=$("#prop-mark").val();
+    jdataEls[curEl.dataset.element][11]=$("#prop-desc").val();
   }
 
   function submitCustomImg(){
-    jdata_el[cur_el.dataset.element][3]=$("#custom-link").val();
-    cur_el.style.backgroundImage="url('"+$("#custom-link").val()+"')";
+    jdataEls[curEl.dataset.element][3]=$("#custom-link").val();
+    curEl.style.backgroundImage="url('"+$("#custom-link").val()+"')";
   }
 
 
   function populate(){
-    for(let i = Number(gm_from); i <Number(gm_until); i++) {
-      if (jdata_el[i]){
-  /*         if (!good_pics[i]){
-          console.log(good_pics[i-1]);
-          console.log(good_pics[i-2]);
+    for(let i = Number(gmFrom); i <Number(gmUntil); i++) {
+      if (jdataEls[i]){
+  /*         if (!goodPics[i]){
+          console.log(goodPics[i-1]);
+          console.log(goodPics[i-2]);
         } */
         
         let o = makeElem(i,true);
@@ -148,55 +149,64 @@
       if($(e.target).is(".elem-delete")) {
         let _this = e.target.parentElement;
         let el = _this.dataset.element;
-        $aside.append("<li style='font-size:smaller'>Deleted "+el+" ("+jdata_el[el][1]+")</li>");
-        delete jdata_el[el];
+        $aside.append("<li style='font-size:smaller'>Deleted "+el+" ("+jdataEls[el][1]+")</li>");
+        delete jdataEls[el];
         _this.classList.add("deleted");
       }
       else {
-        cur_el= e.target;
-        let el = cur_el.dataset.element;
+        curEl= e.target;
+        let el = curEl.dataset.element;
 
         $(".edit-field").show();
 
-        if ($(cur_el).has(".elem-updated").length<=0 && $(cur_el).hasClass("elem-selected")){
-          if (cur_el.dataset.picn==8)
-            cur_el.dataset.picn=0;
+        if ($(curEl).has(".elem-updated").length<=0 && $(curEl).hasClass("elem-selected")){
+          if (curEl.dataset.picn==8)
+            curEl.dataset.picn=0;
           else
-            cur_el.dataset.picn++;
+            curEl.dataset.picn++;
           
-          var g = (Number(cur_el.dataset.picn)+1);
-          cur_el.style.backgroundImage="url('"+good_pics[cur_el.dataset.element]["pic"+g]+"')";
-          jdata_el[cur_el.dataset.element][3]=good_pics[cur_el.dataset.element]["pic"+g];
+          var g = (Number(curEl.dataset.picn)+1);
+          curEl.style.backgroundImage="url('"+goodPics[curEl.dataset.element]["pic"+g]+"')";
+          jdataEls[curEl.dataset.element][3]=goodPics[curEl.dataset.element]["pic"+g];
         }
         
-        $("#custom-name").val(jdata_el[el][1]);
-        $("#custom-link").val(jdata_el[el][3]);
-        $("#traducja").val(jdata_el[el][4]);
-        $("#traducru").val(jdata_el[el][5]);
+        $("#custom-name").val(jdataEls[el][1]);
+        $("#custom-link").val(jdataEls[el][3]);
+        $("#traducja").val(jdataEls[el][4]);
+        $("#traducru").val(jdataEls[el][5]);
 
-        let par1_i = jdata_eq[jdata_el[cur_el.dataset.element][6]][0];
-        let par2_i = jdata_eq[jdata_el[cur_el.dataset.element][6]][1];
-        let par1 = makePreviewElem(par1_i);
-        let par2 = makePreviewElem(par2_i);
-        
         $("#equation").empty();
-        $("#equation").append(par1);
-        $("#equation").append("&nbsp;＋&nbsp;")
-        $("#equation").append(par2);
+
+        let mainEls =[0,1,2,3];
+        if (el in mainEls){        
+          let par1 = "";
+          let par2 = "";
+        }
+        else{
+          let par1_i = jdataEqs[jdataEls[curEl.dataset.element][6]][0];
+          let par2_i = jdataEqs[jdataEls[curEl.dataset.element][6]][1];
+          let par1 = makePreviewElem(par1_i);
+          let par2 = makePreviewElem(par2_i);
+
+          
+          $("#equation").append(par1);
+          $("#equation").append("&nbsp;＋&nbsp;")
+          $("#equation").append(par2);
+        }
 
         $("#prop-id").empty();
-        $("#prop-id").append(cur_el.dataset.element);
+        $("#prop-id").append(curEl.dataset.element);
         
         $("#prop-mark").empty();
-        if (jdata_el[cur_el.dataset.element][2])
-          $("#prop-mark").val(jdata_el[cur_el.dataset.element][2]);
+        if (jdataEls[curEl.dataset.element][2])
+          $("#prop-mark").val(jdataEls[curEl.dataset.element][2]);
         
         $("#prop-desc").empty();
-        if (jdata_el[cur_el.dataset.element][11])
-          $("#prop-desc").val(jdata_el[cur_el.dataset.element][11]);
+        if (jdataEls[curEl.dataset.element][11])
+          $("#prop-desc").val(jdataEls[curEl.dataset.element][11]);
 
         $(".elem-selected").removeClass("elem-selected");
-        cur_el.classList.add("elem-selected");
+        curEl.classList.add("elem-selected");
       }
     });
   }
@@ -204,39 +214,39 @@
   function makeElem(j){
     let o = document.createElement("div");
     o.classList.add("elem");
-    if (jdata_el[j][3]=="") {
-      if (good_pics[j]){
-        o.style.backgroundImage="url('"+good_pics[j]["pic1"]+"')";
-        jdata_el[j][3]="url('"+good_pics[j]["pic1"]+"')";
+    if (jdataEls[j][3]=="") {
+      if (goodPics[j]){
+        o.style.backgroundImage="url('"+goodPics[j]["pic1"]+"')";
+        jdataEls[j][3]="url('"+goodPics[j]["pic1"]+"')";
       }
     }
     else {
-      o.style.backgroundImage="url('"+jdata_el[j][3]+"')";
+      o.style.backgroundImage="url('"+jdataEls[j][3]+"')";
       o.innerHTML+='<span class="elem-updated">❖</span>';
     }
-    o.classList.add("p"+jdata_el[j][0]);
+    o.classList.add("p"+jdataEls[j][0]);
     o.dataset.element = j;
     o.innerHTML+="<span>";
-    o.innerHTML+='</span><span class="elem-name">'+jdata_el[j][1]+'</span><span class="elem-delete">ｘ</span>';
+    o.innerHTML+='</span><span class="elem-name">'+jdataEls[j][1]+'</span><span class="elem-delete">ｘ</span>';
     return o;
   }
 
   function makePreviewElem(j){
     let o = document.createElement("div");
     o.classList.add("preview-elem");
-    if (jdata_el[j]){
-      if (jdata_el[j][3]=="") {
-        if (good_pics[j])
-          o.style.backgroundImage="url('"+good_pics[j]["pic1"]+"')";
+    if (jdataEls[j]){
+      if (jdataEls[j][3]=="") {
+        if (goodPics[j])
+          o.style.backgroundImage="url('"+goodPics[j]["pic1"]+"')";
       }
       else {
-        o.style.backgroundImage="url('"+jdata_el[j][3]+"')";
+        o.style.backgroundImage="url('"+jdataEls[j][3]+"')";
         o.innerHTML+='<span class="elem-updated">❖</span>';
       }
-      o.classList.add("p"+jdata_el[j][0]);
+      o.classList.add("p"+jdataEls[j][0]);
       o.dataset.element = j;
       o.innerHTML+="<span>";
-      o.innerHTML+='</span><span class="elem-name">'+jdata_el[j][1];
+      o.innerHTML+='</span><span class="elem-name">'+jdataEls[j][1];
     }
     else {
       o.innerHTML+="<span style='color:red;font-size:initial'>Deleted</span>";
@@ -257,27 +267,27 @@
       $("#old-pics-check").prop("checked", false);
     }
     
-    let res_el = "var jdata_el = ";
-    res_el += JSON.stringify(jdata_el);
-    res_el += ";";
-    download(res_el, 'elements-'+gm_num+'.json2', 'text/plain');
+    let resEl = "var jdataEls = ";
+    resEl += JSON.stringify(jdataEls);
+    resEl += ";";
+    download(resEl, 'elements-'+gmNum+'.json2', 'text/plain');
   }
   
   function appendOldAndTraduc(){
-    var good_old_data = new Object();
-    for (let i=0;i<old_data.length;i++){
-      good_old_data[old_data[i]["id"]] = old_data[i];
+    var goodOldData = new Object();
+    for (let i=0;i<OldData.length;i++){
+      goodOldData[OldData[i]["id"]] = OldData[i];
     }
     
-    Object.keys(jdata_el).forEach(el => {
-      jdata_el[el][2]=good_old_data[el]["mark"];
-      jdata_el[el][4]="";
-      jdata_el[el][5]="";
-      jdata_el[el][6]=Number(good_old_data[el]["originalEquation"]);
-      jdata_el[el][7]=Number(good_old_data[el]["owners"]);
-      jdata_el[el][8]=Number(good_old_data[el]["prevalence"]);
-      jdata_el[el][9]=Number(good_old_data[el]["usefulness"]);
-      jdata_el[el][10]=2;
+    Object.keys(jdataEls).forEach(el => {
+      jdataEls[el][2]=goodOldData[el]["mark"];
+      jdataEls[el][4]="";
+      jdataEls[el][5]="";
+      jdataEls[el][6]=Number(goodOldData[el]["originalEquation"]);
+      jdataEls[el][7]=Number(goodOldData[el]["owners"]);
+      jdataEls[el][8]=Number(goodOldData[el]["prevalence"]);
+      jdataEls[el][9]=Number(goodOldData[el]["usefulness"]);
+      jdataEls[el][10]=2;
     });
     saveAndDownload();
   }
@@ -293,14 +303,14 @@
       $.each($(".elem"), function (index, item) {
         let i = item.dataset.element;
         if ($(item).has(".elem-updated"))
-          item.style.backgroundImage="url('"+good_pics[i]["pic1"]+"')";
+          item.style.backgroundImage="url('"+goodPics[i]["pic1"]+"')";
       });
     }
     else {
       $.each($(".elem"), function (index, item) {
         let i = item.dataset.element;
         if ($(item).has(".elem-updated"))
-          item.style.backgroundImage="url('"+jdata_el[i][3]+"')";
+          item.style.backgroundImage="url('"+jdataEls[i][3]+"')";
       });
     }
   });

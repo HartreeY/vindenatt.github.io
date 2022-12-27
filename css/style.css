@@ -91,6 +91,8 @@ aside div {
   margin-bottom:5%;
 }
 
+
+
 .elem-selected {
   outline: 3px double;
   outline-offset: -1px;
@@ -205,7 +207,7 @@ aside textarea, input[type=text] {
     border-radius: 8px;
     font-weight: 600;
     font-size:14px;
-    margin-left:6px;
+    margin-right:6px;
   }
 
   #equation {
@@ -278,7 +280,10 @@ aside textarea, input[type=text] {
   }
 
   .flying-pelmen {
-    animation: element-found-move-y var(--calculated-animation-time) 1.25s both,element-found-move-x var(--calculated-animation-time) 1.25s;
+    animation: element-found-move-y var(--calculated-animation-time) 0.25s both;
+  }
+  .flying-pelmen img {
+    animation: element-found-reveal 0.25s cubic-bezier(.45,1.07,1,.86), element-found-move-x var(--calculated-animation-time) 0.25s, element-found-shadow 1.5s both ease;
   }
 
 .elem-name {
@@ -370,6 +375,16 @@ aside button {
   padding: 6px;
 }
 
+aside button:active {
+  border: 2px inset rgb(50 87 87);
+}
+
+aside button:disabled {
+  background: rgba(239, 239, 239, 0.3);
+  border-style:double;
+  border-color: rgba(118, 118, 118, 0.3);
+}
+
 .p0 {
     background-color: rgb(84, 117, 227);
 }
@@ -434,7 +449,7 @@ aside button {
 .bitton{
     background-image: linear-gradient(92.88deg, #455EB5 9.16%, #5643CC 43.89%, #673FD7 64.72%);
     border-radius: 8px;
-    border-style: none;
+    border: 2px outset rgb(37 55 68);
     box-sizing: border-box;
     color: #FFFFFF;
     cursor: pointer;
