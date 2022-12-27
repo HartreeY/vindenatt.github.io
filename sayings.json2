@@ -1,0 +1,19 @@
+var sayings = [
+    "As Tim Hoppenwheel once said:",
+    "As transcribed by Morizio Kukushka:",
+    "As some people say:",
+    "As the saying goes:",
+    "There was one time when this element was possessed by shabereru magic and said:",
+    "There is a local saying about this in Mbabane:",
+    "This element was heavily investigated by Guth'Alak:",
+    "Tropical Scientist wrote in his memoirs:",
+    "As Ron Beton put beautifully:",
+    "Rtaka Mwaki often said this about the element:",
+    "As the Transdimensional Chorizo Expert wrote:",
+    "As some cellophane tribe members say:",
+    "As 14 independent assholes said:",
+    "As 13 quasi-drunk people said about this:",
+    "As one famous trombone player said:",
+    "A message regarding this element booms in your head in a somewhat advertising voice:",
+    "There were several cockroaches that said:"
+]

@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="css/style.css">
   <script type="text/javascript" src="elements.json2"></script>
   <script type="text/javascript" src="equations.json2"></script>
+  <script type="text/javascript" src="sayings.json2"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   
   <title>Elemental: Rebirth</title>
@@ -52,7 +53,7 @@
       <div class="edit-field">
         <button onclick="google()">Google this</button>
       </div>
-      <div class="aside-feature">
+      <div class="aside-feature" style="flex-direction: column;">
       <label class="feature-label"><input type="range" id="element-scale" name="element-scale" min="0.8" max="2" value="1" step="0.2">
       Element scale</label>
       <label class="feature-label"><input type="range" id="volume-range" name="volume-range" min="0" max="1" value="0.8" step="0.1">
@@ -69,6 +70,16 @@
   <!-- <footer>
     Coded by <a href="http://roentg.wix.com/prinnylist">Vindenatt</a>.
   </footer> -->
+
+  <div id="popup-new-elem" class="modal">
+    <div class="modal-content">
+      <span class="close" id="popup-new-elem-close">&times;</span>
+      <h5 style="text-align: center;display: block;">NEW ELEMENT FOUND!</h5>
+      <h3 id="popup-new-elem-name" style="text-align: center"><mark>Error: no name</mark></h3>
+      <span id="popup-new-elem-desc"><mark>Error: no desc</mark></span>
+      <blockquote id="popup-new-elem-mark"><mark>Error: no mark</mark></blockquote>
+    </div>
+  </div>
 </body>
 
 <script type="text/javascript" src="rebirth.js"></script>
