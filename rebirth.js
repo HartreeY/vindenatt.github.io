@@ -424,12 +424,12 @@ function randEl(arr){
 }
 
 function popupNewElem(ele) {
-  $("#popup-new-elem-name").html(jdataEl[ele][1]);
-  if (jdataEl[ele][11])
-    $("#popup-new-elem-desc").html(jdataEl[ele][11]+"<br/>This fecker also said:");
+  $("#popup-new-elem-name").html(jdataEls[ele][1]);
+  if (jdataEls[ele][11])
+    $("#popup-new-elem-desc").html(jdataEls[ele][11]+"<br/>This fecker also said:");
   else
     $("#popup-new-elem-desc").html(randEl(sayings));
-  $("#popup-new-elem-mark").html(jdataEl[ele][2]);
+  $("#popup-new-elem-mark").html(jdataEls[ele][2]);
   $pnewelem.show();
 }
 
